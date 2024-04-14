@@ -4,8 +4,8 @@ import math
 from enum import Enum
 from typing import List, Dict
 
-from PyQt6 import QtCore, QtWidgets, QtGui
-from PyQt6.QtCore import QEvent, QPoint, QSize, Qt, QPointF, QRectF, QSizeF
+from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtCore import QEvent, QPoint, QSize, Qt, QPointF, QRectF, QSizeF
 
 """
 TODO:   Fix colors saturation   

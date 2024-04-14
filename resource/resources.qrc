@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix='/'>
+    <file>images/mainwindow/menu.svg</file>
+    <file>images/mainwindow/next.svg</file>
+    <file>images/mainwindow/play.svg</file>
+    <file>images/mainwindow/previous.svg</file>
+    <file>images/mainwindow/repeat.svg</file>
+    <file>images/mainwindow/shuffle.svg</file>
+    <file>images/mainwindow/volume-mute.svg</file>
+    <file>images/mainwindow/volume-up.svg</file>
+    <file>images/mainwindow/volume.svg</file>
+    <file>qss/styles.css</file>
+  </qresource>
+</RCC>

@@ -3,11 +3,11 @@ import math
 
 from enum import Enum
 
-from PyQt6 import QtWidgets
-from PyQt6 import QtGui
-from PyQt6.QtCore import QSize, Qt, QPointF, QSizeF
-from PyQt6.QtGui import QWindow
-from PyQt6.QtWidgets import QApplication, QMainWindow, QSizePolicy
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
+from PyQt5.QtCore import QSize, Qt, QPointF, QSizeF
+from PyQt5.QtGui import QWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy
 
 from segmented_slider import SegmentedSlider
 
@@ -172,7 +172,7 @@ class WaveformSlider(SegmentedSlider):
 
 
 if __name__ == "__main__":
-    from PyQt6.QtWidgets import QHBoxLayout, QPushButton
+    from PyQt5.QtWidgets import QHBoxLayout, QPushButton
 
     app = QApplication(sys.argv)
     window = QMainWindow()

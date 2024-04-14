@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (
     QProgressBar,
 )
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QLinearGradient, QColor
-from PyQt5.QtCore import Qt, QSize, QPointF
+from PyQt5.QtCore import Qt, QSize, QPointF, QFile
 from qframelesswindow import FramelessMainWindow, StandardTitleBar
 
 # from ..utils.utils import (
@@ -26,12 +26,17 @@ from qframelesswindow import FramelessMainWindow, StandardTitleBar
 #    get_image_color_palette,
 #    get_image_primary_color,
 # )
+from Common.image_utils import (
+    get_rounded_pixmap,
+    get_image_primary_color,
+    get_image_color_palette,
+)
+from Common import resources
 
-from Common.image_utils import *
 
-RES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", "res")
-THEME_PATH = os.path.join(os.path.dirname(__file__), "..", "theme")
-ALBUM_COVER = "img/album-cover-test.jpg"
+# RES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", "res")
+# THEME_PATH = os.path.join(os.path.dirname(__file__), "..", "theme")
+ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
 
 
 class CustomTitleBar(StandardTitleBar):
@@ -157,11 +162,14 @@ class MainWindowUI(object):
         self.main_window.setFixedSize(QSize(530, 700))
         self.setup_ui()
         # self.set_style_sheet(app)
-        with open(os.path.join(THEME_PATH, "styles.css"), "r") as theme:
-            app.setStyleSheet(theme.read())
+        style_file = QFile(":/qss/styles.css")
+        style_file.open(QFile.ReadOnly)
+        qss = str(style_file.readAll(), encoding="utf-8")
+        style_file.close()
+        app.setStyleSheet(qss)
 
     def set_style_sheet(self, main_window):
-        with open(os.path.join(THEME_PATH, "styles.css"), "r") as theme:
+        with open(":/qss/styles.css", "r") as theme:
             main_window.setStyleSheet(theme.read())
 
     def setup_ui(self):
@@ -177,7 +185,7 @@ class MainWindowUI(object):
         self.album_cover_label.setFixedSize(QSize(300, 300))
 
         pixmap = QPixmap()
-        pixmap.load(os.path.join(RES_PATH, ALBUM_COVER))
+        pixmap.load(ALBUM_COVER)
         modified_pixmap = get_rounded_pixmap(
             pixmap.scaled(
                 300,
@@ -251,7 +259,7 @@ class MainWindowUI(object):
         self.progress_slider.setMaximum(100)
         self.progress_slider.setMinimum(0)
 
-        primary_color = get_image_primary_color(os.path.join(RES_PATH, ALBUM_COVER))
+        primary_color = get_image_primary_color(ALBUM_COVER)
         rgb_primary = (
             f"rgba({primary_color[0]},{primary_color[1]},{primary_color[2]}, {0.5})"
         )
@@ -287,15 +295,9 @@ class MainWindowUI(object):
         self.next_button = QPushButton()
         self.previous_button = QPushButton()
 
-        self.play_button.setIcon(
-            QIcon(QPixmap(os.path.join(RES_PATH, "icons/play.svg")))
-        )
-        self.next_button.setIcon(
-            QIcon(QPixmap(os.path.join(RES_PATH, "icons/next.svg")))
-        )
-        self.previous_button.setIcon(
-            QIcon(QPixmap(os.path.join(RES_PATH, "icons/previous.svg")))
-        )
+        self.play_button.setIcon(QIcon(QPixmap(":/images/mainwindow/play.svg")))
+        self.next_button.setIcon(QIcon(QPixmap(":/images/mainwindow/next.svg")))
+        self.previous_button.setIcon(QIcon(QPixmap(":/images/mainwindow/previous.svg")))
 
         self.play_button.setProperty("class", "player-button")
         self.next_button.setProperty("class", "player-button")
@@ -328,13 +330,9 @@ class MainWindowUI(object):
         self.volume_up_button.setProperty("class", "volume-controls")
         self.volume_mute_button.setProperty("class", "volume-controls")
 
-        self.volume_up_button.setIcon(
-            QIcon(os.path.join(RES_PATH, "icons/volume-up.svg"))
-        )
+        self.volume_up_button.setIcon(QIcon(":/images/mainwindow/volume-up.svg"))
         self.volume_up_button.setFixedSize(QSize(30, 30))
-        self.volume_mute_button.setIcon(
-            QIcon(os.path.join(RES_PATH, "icons/volume-mute.svg"))
-        )
+        self.volume_mute_button.setIcon(QIcon(":/images/mainwindow/volume-mute.svg"))
         self.volume_mute_button.setFixedSize(QSize(30, 30))
 
         # self.volume_slider.setMaximum(100)
@@ -362,13 +360,11 @@ class MainWindowUI(object):
         self.shuffle_playlist.setProperty("class", "menu-button")
         self.enable_repeat.setProperty("class", "menu-button")
 
-        self.shuffle_playlist.setIcon(
-            QIcon(os.path.join(RES_PATH, "icons/shuffle.svg"))
-        )
+        self.shuffle_playlist.setIcon(QIcon(":/images/mainwindow/shuffle.svg"))
         self.shuffle_playlist.setFixedSize(QSize(30, 30))
-        self.enable_repeat.setIcon(QIcon(os.path.join(RES_PATH, "icons/repeat.svg")))
+        self.enable_repeat.setIcon(QIcon(":/images/mainwindow/repeat.svg"))
         self.enable_repeat.setFixedSize(QSize(30, 30))
-        self.menu_button.setIcon(QIcon(os.path.join(RES_PATH, "icons/menu.svg")))
+        self.menu_button.setIcon(QIcon(":/images/mainwindow/menu.svg"))
         self.menu_button.setFixedSize(QSize(30, 30))
 
         self.menu_layout.addWidget(self.menu_button)
@@ -395,7 +391,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 
-    colors = get_image_color_palette(os.path.join(RES_PATH, ALBUM_COVER))
+    colors = get_image_color_palette(ALBUM_COVER)
     main_window = Window(colors)
     ui = MainWindowUI(main_window, app)
     # ui.setup_ui(main_window)
