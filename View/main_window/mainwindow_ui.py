@@ -14,18 +14,14 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QSizePolicy,
     QApplication,
-    QGraphicsBlurEffect,
     QProgressBar,
 )
 from PyQt5.QtGui import QPixmap, QIcon, QPainter, QLinearGradient, QColor
 from PyQt5.QtCore import Qt, QSize, QPointF, QFile
 from qframelesswindow import FramelessMainWindow, StandardTitleBar
 
-# from ..utils.utils import (
-#    get_rounded_pixmap,
-#    get_image_color_palette,
-#    get_image_primary_color,
-# )
+from album_cover.album_cover_widget import AlbumCover
+
 from Common.image_utils import (
     get_rounded_pixmap,
     get_image_primary_color,
@@ -34,8 +30,6 @@ from Common.image_utils import (
 from Common import resources
 
 
-# RES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "..", "res")
-# THEME_PATH = os.path.join(os.path.dirname(__file__), "..", "theme")
 ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
 
 
@@ -158,15 +152,23 @@ class MainWindowUI(object):
     def __init__(self, main_window, app: QApplication):
         # Window configuration
         self.main_window = main_window
+
         # self.main_window.setWindowTitle("qtMusicPlayer")
         self.main_window.setFixedSize(QSize(530, 700))
         self.setup_ui()
+
         # self.set_style_sheet(app)
         style_file = QFile(":/qss/styles.css")
         style_file.open(QFile.ReadOnly)
         qss = str(style_file.readAll(), encoding="utf-8")
         style_file.close()
         app.setStyleSheet(qss)
+
+    def create_widgets(self):
+        """Create widgets"""
+
+        # Album cover widget
+        self.album_cover = AlbumCover(self)
 
     def set_style_sheet(self, main_window):
         with open(":/qss/styles.css", "r") as theme:
@@ -196,7 +198,6 @@ class MainWindowUI(object):
         )
         self.album_cover_label.setPixmap(modified_pixmap)
         self.album_cover_label.setObjectName("albumCover")
-        self.cover_layout.addWidget(self.album_cover_label)
 
         # The album cover layout is added to the main layout
         self.main_layout.addLayout(self.cover_layout)

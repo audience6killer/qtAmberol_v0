@@ -175,10 +175,10 @@ if __name__ == "__main__":
     from PyQt5.QtWidgets import QHBoxLayout, QPushButton
 
     app = QApplication(sys.argv)
-    window = QMainWindow()export QT_QPA_PLATFORM=wayland
+    window = QMainWindow()
 
     n_steps = 50
-    layout = QHBoxLayout()export QT_QPA_PLATFORM=wayland
+    layout = QHBoxLayout()
 
     fixed_size = QSize(500, 300)
     main_widget = QtWidgets.QWidget()

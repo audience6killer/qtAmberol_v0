@@ -213,10 +213,10 @@ class SegmentedSlider(QtWidgets.QWidget):
         active_pct = 0.0
 
         if self._orientation == Qt.Orientation.Vertical:
-            click_pos = e.position().y() - self._padding - self._step_size
+            click_pos = e.pos().y() - self._padding - self._step_size
             active_pct = (self.canvas_height - click_pos) / self.canvas_height
         elif self._orientation == Qt.Orientation.Horizontal:
-            click_pos = e.position().x() - self._padding + self._step_size
+            click_pos = e.pos().x() - self._padding + self._step_size
             active_pct = (self.canvas_width - click_pos) / self.canvas_width
 
         hover_value = int(self._vmin + active_pct * (self._vmax - self._vmin))
@@ -242,12 +242,12 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         if self._orientation == Qt.Orientation.Vertical:
             # self._step_size = self.canvas_height / self.n_steps
-            click_pos = e.position().y() - self._padding - self._step_size
+            click_pos = e.pos().y() - self._padding - self._step_size
             active_pct = (self.canvas_height - click_pos) / self.canvas_height
 
         elif self._orientation == Qt.Orientation.Horizontal:
             # self._step_size = self.canvas_width / self.n_steps
-            click_pos = e.position().x() - self._padding + self._step_size
+            click_pos = e.pos().x() - self._padding + self._step_size
             active_pct = (self.canvas_width - click_pos) / self.canvas_width
             # active_pct = 1 - active_pct
             # active_pct = (click_pos - self.canvas_width) / self.canvas_width
