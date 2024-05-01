@@ -12,12 +12,10 @@ from Common.image_utils import get_rounded_pixmap
 ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
 
 
-class AlbumCover(QWidget):
+class AlbumCoverWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        if parent:
-            self.parent = parent
         self.setup_ui()
 
     def setup_ui(self):
@@ -39,3 +37,5 @@ class AlbumCover(QWidget):
         self.album_cover_label.setPixmap(modified_pixmap)
         self.album_cover_label.setObjectName("albumCover")
         self.cover_layout.addWidget(self.album_cover_label)
+
+        self.setLayout(self.cover_layout)

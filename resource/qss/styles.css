@@ -1,68 +1,35 @@
-.player-button {
-    /*height: 50px;*/
-    /*width: 50px;*/
-    border-radius: 25px;
-    border: 1px solid #e9ecef;
-    background-color: rgba(222, 226, 230, 0.1);
+QPushButton {
+  border-radius: 25px;
+  border: 1px solid #e9ecef;
+  background-color: rgba(222, 226, 230, 0.1);
 }
+
+QPushButton#mute-button, #volume-up {
+  border-radius: 15px;
+}
+
 QPushButton:hover {
-    background-color: #ced4da;
+  background-color: #ced4da;
 }
+
 QPushButton:focus {
-    border: 1px solid #ced4da;
+  border: 1px solid #ced4da;
 }
+
 QLabel#track-title {
-    font-weight: bold;
-    font-size: 20px;
+  font-weight: bold;
+  font-size: 20px;
 }
+
 QLabel#track-artist {
-    font-size: 15px;
+  font-size: 15px;
 }
+
 QLabel#track-album {
-    font-size: 15px;
-}
-QSlider::groove:horizontal {
-    height: 20px;
-    /*width: 300px;*/
-    border-radius: 2px;
-    border: 1px solid #ced4da;
-    height: 10px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-    background-color: rgba(222,226,230,0.1);
-    /*margin: 2px 0;*/
+  font-size: 15px;
 }
 
-QSlider::handle:horizontal {
-    background-color:#e9ecef;
-    border: 2px solid #e9ecef;
-    width: 16px;
-	height: 20px;
-	line-height: 20px;
-	margin-top: -5px;
-	margin-bottom: -5px;
-	border-radius: 10px;
-}
-QSlider::add-page:horizontal {
-    background: transparent;
+QLabel#left-timestamp, #current-timestamp {
+  font-size: 12px;
 }
 
-QSlider::sub-page:horizontal {
-    background: pink;
-}
-QPushButton#menu-button {
-    border-radius: 25px;
-    border: 1px solid #e9ecef;
-    background-color: rgba(222, 226, 230, 0.1);
-}
-
-.time-stamp {
-    font-size: 12px;
-}
-QSlider#volume-slider::groove:horizontal {
-    /*width: 150px;*/
-}
-.volume-controls {
-    border-radius: 15px;
-}
-.menu-button {
-    border-radius: 15px;
-}

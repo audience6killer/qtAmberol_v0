@@ -9,7 +9,7 @@ from PyQt5.QtCore import QSize, Qt, QPointF, QSizeF
 from PyQt5.QtGui import QWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSizePolicy
 
-from segmented_slider import SegmentedSlider
+from .segmented_slider import SegmentedSlider
 
 
 class WaveformSlider(SegmentedSlider):
@@ -19,12 +19,13 @@ class WaveformSlider(SegmentedSlider):
         Normal = 2
 
     def __init__(self, steps, orientation: Qt.Orientation, parent=None):
-        super().__init__(steps, orientation, parent)
-        # super().enableAutomaticStepsParamsUpdate(False)
-        self._params_update = (
-            False  # True: this class updates the params; False: super() does it
-        )
 
+        super().__init__(steps, orientation, parent)
+
+        # True: this class updates the params; False: super() does it
+        self._params_update = False
+
+        self.parent = parent
         self.v_offset = 0  # Vertical center, from which it will draw the steps
         self.waveform_style = self.WaveformStyle.Normal
         self.amplitude = self.n_steps * [1]

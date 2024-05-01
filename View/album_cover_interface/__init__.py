@@ -1,1 +1,1 @@
-from .album_cover_widget import AlbumCover
+from .album_cover_interface import AlbumCoverInterface
