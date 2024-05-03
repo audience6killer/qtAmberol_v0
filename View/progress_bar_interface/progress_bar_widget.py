@@ -5,6 +5,7 @@ import random
 
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QSizePolicy, QHBoxLayout, QWidget
+from PyQt5.QtGui import QColor
 
 from Components.segmented_slider.waveform_slider import WaveformSlider
 
@@ -40,3 +41,7 @@ class ProgressBarWidget(QWidget):
         self.main_layout.addWidget(self.progress_bar)
 
         self.setLayout(self.main_layout)
+
+    def setSliderColor(self, color: QColor):
+        self.progress_bar.setColor(color)
+

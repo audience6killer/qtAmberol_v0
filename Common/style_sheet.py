@@ -10,7 +10,7 @@ def getStyleSheet(file: str):
     file: str
         qss file name, without `.qss` suffix
     """
-    f = QFile(f":/qss/{file}.css")
+    f = QFile(f"./resource/qss/{file}.css")
     f.open(QFile.ReadOnly)
     qss = str(f.readAll(), encoding="utf-8")
     f.close()

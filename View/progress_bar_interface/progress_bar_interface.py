@@ -4,6 +4,7 @@ Progress bar interface
 
 from PyQt5.QtCore import QSize, pyqtSignal, Qt
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtGui import QColor
 
 from .progress_bar_widget import ProgressBarWidget
 from .timestamp_widget import TimestampWidget
@@ -29,8 +30,6 @@ class ProgressBarInterface(QWidget):
 
     def setup_ui(self):
         """Setup ui"""
-
-        # self.setFixedSize(QSize(200, 120))
         self.progress_layout.setContentsMargins(110, 0, 110, 0)
 
         self.progress_layout.addWidget(self.progress_widget)
@@ -41,3 +40,7 @@ class ProgressBarInterface(QWidget):
         self.progress_layout.setSpacing(0)
 
         self.setLayout(self.progress_layout)
+
+    def setSliderColor(self, color: QColor):
+        self.progress_widget.setSliderColor(color)
+

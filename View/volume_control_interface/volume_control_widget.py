@@ -3,7 +3,7 @@ Volume control widget
 """
 
 from PyQt5.QtWidgets import QHBoxLayout, QWidget, QPushButton
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import QSize, Qt
 
 from Components.segmented_slider.segmented_slider import SegmentedSlider
@@ -41,7 +41,7 @@ class VolumeControlWidget(QWidget):
         self.volume_mute_button.setFixedSize(QSize(30, 30))
 
         self.volume_widget.setFixedSize(QSize(200, 40))
-        self.volume_widget.setAddPagetyle(SegmentedSlider.AddPageStyle.Outline)
+        self.volume_widget.setAddPagetyle(SegmentedSlider.AddPageStyle.Fill)
         self.volume_widget.setSolidPercent(0.7)
 
         self.main_layout.addWidget(self.volume_mute_button)
@@ -49,3 +49,6 @@ class VolumeControlWidget(QWidget):
         self.main_layout.addWidget(self.volume_up_button)
 
         self.setLayout(self.main_layout)
+
+    def setSliderColor(self, color: QColor):
+        self.volume_widget.setColor(color)

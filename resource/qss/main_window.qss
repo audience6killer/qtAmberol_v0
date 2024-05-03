@@ -1,7 +1,7 @@
 QPushButton {
   border-radius: 25px;
-  /*border: 1px solid rgba(76, 140, 65, 0.8);*/
-  background-color: rgba(76, 65, 140, 0.3)
+  /*border: 1px solid rgba($red, $blue, $green, 0.8);*/
+  background-color: rgba($red, $green, $blue, $alpha_bg_normal)
 }
 
 QPushButton#mute-button, #volume-up {
@@ -13,12 +13,12 @@ QPushButton#menu-button, #shuffle-button, #repeat-button {
 }
 
 QPushButton:hover {
-  border: 1px solid rgba(76, 65, 140, 0.7);
-  background-color: rgba(76, 65, 140, 0.4);
+  border: 1px solid rgba($red, $green, $blue, $alpha_border);
+  background-color: rgba($red, $green, $blue, $alpha_bg_hover);
 }
 
 QPushButton:focus {
- border: 1px solid rgba(76, 65, 140, 0.7);
+ border: 1px solid rgba($red, $green, $blue, $alpha_border);
 }
 
 QLabel#track-title {

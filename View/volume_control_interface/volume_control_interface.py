@@ -4,6 +4,7 @@ Volume widget interface
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
+from PyQt5.QtGui import QColor
 
 from .volume_control_widget import VolumeControlWidget
 
@@ -29,3 +30,6 @@ class VolumeControlInterface(QWidget):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.main_layout)
+
+    def setSliderColor(self, color: QColor):
+        self.volume_control.setSliderColor(color)

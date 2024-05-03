@@ -9,6 +9,5 @@
     <file>images/volume_control/volume-mute.svg</file>
     <file>images/volume_control/volume-up.svg</file>
     <file>images/volume_control/volume.svg</file>
-    <file>qss/main_window.css</file>
   </qresource>
 </RCC>
