@@ -1,24 +1,24 @@
 QPushButton {
   border-radius: 25px;
-  /*border: 1px solid rgba(76, 140, 65, 0.8);*/
-  background-color: rgba(76, 65, 140, 0.3)
+  /*border: 1px solid rgba(62, 46, 37, 0.8);*/
+  background-color: rgba(62, 37, 46, 0.2);
 }
 
 QPushButton#mute-button, #volume-up {
   border-radius: 15px;
 }
 
-QPushButton#menu-button, #shuffle-button, #repeat-button {
+QPushButton#menu-button, #shuffle-button, #repeat-button, #playlist-button {
   border-radius: 15px;
 }
 
 QPushButton:hover {
-  border: 1px solid rgba(76, 65, 140, 0.7);
-  background-color: rgba(76, 65, 140, 0.4);
+  border: 1px solid rgba(62, 37, 46, 0.5);
+  background-color: rgba(62, 37, 46, 0.3);
 }
 
 QPushButton:focus {
- border: 1px solid rgba(76, 65, 140, 0.7);
+ border: 1px solid rgba(62, 37, 46, 0.5);
 }
 
 QLabel#track-title {
@@ -36,4 +36,13 @@ QLabel#track-album {
 
 QLabel#left-timestamp, #current-timestamp {
   font-size: 12px;
+}
+
+QToolTip {
+    background-color: rgba(62, 37, 46, 0.2);
+    border: 1px solid rgb(62, 37, 46);
+    padding: 3px;
+    /*border-radius: 10px;*/
+    color: white;
+    /*opacity: 200;*/
 }

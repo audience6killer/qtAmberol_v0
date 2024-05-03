@@ -15,7 +15,7 @@ class ProgressBarWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.steps = 50
+        self.steps = 60
         self.orientation = Qt.Orientation.Horizontal
 
         self.progress_bar = WaveformSlider(self.steps, self.orientation, self)

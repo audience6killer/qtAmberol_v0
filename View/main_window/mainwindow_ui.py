@@ -8,8 +8,6 @@ from PyQt5.QtCore import Qt, QSize, QPointF
 
 from qframelesswindow import FramelessMainWindow, StandardTitleBar
 
-from Components.custom_window import CustomWindow
-
 from View.album_cover_interface import AlbumCoverInterface
 from View.song_info_interface import SongInfoInterface
 from View.progress_bar_interface import ProgressBarInterface
@@ -25,7 +23,8 @@ from Common.parse_stylesheet import generate_css
 from Common import resources
 
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test-4.jpg"
+
 
 class CustomTitleBar(StandardTitleBar):
     def __init__(self, parent):
@@ -40,6 +39,7 @@ class CustomTitleBar(StandardTitleBar):
 
 class MainWindowUI(FramelessMainWindow):
     repaint_flag = True
+
     def __init__(self, parent=None):
         # Window configuration
         super().__init__(parent=parent)
@@ -85,6 +85,8 @@ class MainWindowUI(FramelessMainWindow):
 
     def initWidgets(self):
         """Init widgets"""
+
+        # Set slider colors
         color = QColor(self.primary_color[0], self.primary_color[1], self.primary_color[2])
         self.progress_bar.setSliderColor(color)
 
@@ -130,6 +132,7 @@ class MainWindowUI(FramelessMainWindow):
         self.show()
 
     def setQss(self):
+        """ Generate qss and apply """
         generate_css(self.primary_color)
         setStyleSheet(self, "main_window")
 
@@ -138,44 +141,45 @@ class MainWindowUI(FramelessMainWindow):
         self.playerLayout.setContentsMargins(10, 20, 10, 20)
 
     def paintEvent(self, event):
-           painter = QPainter(self)
-           painter.setRenderHint(QPainter.Antialiasing)
+        """ Paint widget event """
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
 
-           # Define the background colors
-           background_colors = [
-               QColor(
-                   self.colors[0][0], self.colors[0][1], self.colors[0][2]
-               ),  # Sample background color 0
-               QColor(
-                   self.colors[2][0], self.colors[2][1], self.colors[2][2]
-               ),  # Sample background color 0Color(),  # Sample background color 1
-               QColor(
-                   self.colors[1][0], self.colors[1][1], self.colors[1][2]
-               ),  # Sample background color 0QColor(0, 0, 255)  # Sample background color 2
-           ]
+         # Define the background colors
+        background_colors = [
+            QColor(
+                self.colors[0][0], self.colors[0][1], self.colors[0][2]
+            ),  # Sample background color 0
+            QColor(
+                self.colors[2][0], self.colors[2][1], self.colors[2][2]
+            ),  # Sample background color 0Color(),  # Sample background color 1
+            QColor(
+                self.colors[1][0], self.colors[1][1], self.colors[1][2]
+            ),  # Sample background color 0QColor(0, 0, 255)  # Sample background color 2
+        ]
 
-           # Define the gradient angles
-           gradient_angles = [
-               (QPointF(0, 0), QPointF(self.width(), self.height())),
-               (QPointF(0, self.height()), QPointF(self.width(), 0)),
-               (QPointF(self.width(), 0), QPointF(0, self.height())),
-           ]
+        # Define the gradient angles
+        gradient_angles = [
+            (QPointF(0, 0), QPointF(self.width(), self.height())),
+            (QPointF(0, self.height()), QPointF(self.width(), 0)),
+            (QPointF(self.width(), 0), QPointF(0, self.height())),
+        ]
 
-           for i, (start_point, end_point) in enumerate(gradient_angles):
-               gradient = QLinearGradient(start_point, end_point)
+        for i, (start_point, end_point) in enumerate(gradient_angles):
+            gradient = QLinearGradient(start_point, end_point)
 
-               # Set the color stops with varying opacity
-               gradient.setColorAt(0, background_colors[i].lighter(120))
-               gradient.setColorAt(
-                   0.7071,
-                   QColor(
-                       background_colors[i].red(),
-                       background_colors[i].green(),
-                       background_colors[i].blue(),
-                       0,
-                   ),
-               )
+            # Set the color stops with varying opacity
+            gradient.setColorAt(0, background_colors[i].lighter(120))
+            gradient.setColorAt(
+                0.7071,
+                QColor(
+                    background_colors[i].red(),
+                    background_colors[i].green(),
+                    background_colors[i].blue(),
+                    0,
+                ),
+            )
 
-               painter.setBrush(gradient)
-               painter.drawRect(self.rect())
+            painter.setBrush(gradient)
+            painter.drawRect(self.rect())
 
