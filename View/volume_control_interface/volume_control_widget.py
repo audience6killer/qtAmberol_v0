@@ -40,7 +40,9 @@ class VolumeControlWidget(QWidget):
         )
         self.volume_mute_button.setFixedSize(QSize(30, 30))
 
-        self.volume_widget.setFixedSize(QSize(100, 300))
+        self.volume_widget.setFixedSize(QSize(200, 40))
+        self.volume_widget.setAddPagetyle(SegmentedSlider.AddPageStyle.Outline)
+        self.volume_widget.setSolidPercent(0.7)
 
         self.main_layout.addWidget(self.volume_mute_button)
         self.main_layout.addWidget(self.volume_widget)

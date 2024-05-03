@@ -29,4 +29,4 @@ ui = MainWindowUI()
 
 ui.show()
 
-app.exec()
+app.exec_()

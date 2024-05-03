@@ -26,5 +26,6 @@ class VolumeControlInterface(QWidget):
         """Setup ui"""
 
         self.main_layout.addWidget(self.volume_control)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.main_layout)

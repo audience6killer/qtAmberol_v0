@@ -1,26 +1,42 @@
 """
 Progress bar widget
 """
+import random
 
 from PyQt5.QtCore import QSize, Qt
-from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSizePolicy, QHBoxLayout, QWidget
 
 from Components.segmented_slider.waveform_slider import WaveformSlider
 
 
-class ProgressBarWidget(WaveformSlider):
+class ProgressBarWidget(QWidget):
 
-    def __init__(self, steps: int, orientation: Qt.Orientation, parent=None):
-        super().__init__(steps, orientation, parent)
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.steps = 50
+        self.orientation = Qt.Orientation.Horizontal
+
+        self.progress_bar = WaveformSlider(self.steps, self.orientation, self)
+
+        self.main_layout = QHBoxLayout()
 
         self.setup_ui()
 
     def setup_ui(self):
-        """Setup ui"""
-        self.setAddPagetyle(self.AddPageStyle.Outline)
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-        self.setFixedSize(QSize(200, 100))
-        self.setWaveformStyle(self.WaveformStyle.FromLongitudinalAxis, v_offset=0.5)
+        self.progress_bar.setAddPagetyle(WaveformSlider.AddPageStyle.Fill)
+        self.progress_bar.setSizePolicy(
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum
+        )
+        self.progress_bar.setFixedSize(QSize(250, 50))
+        self.progress_bar.setWaveformStyle(
+            WaveformSlider.WaveformStyle.Symmetrical
+        )
+        self.progress_bar.setSolidPercent(0.5)
 
-    def update_waveform(self, values: list):
-        self.setWaveformFunction(values)
+        values = [round(random.random(), 2) for _ in range(self.steps)]
+        self.progress_bar.setWaveformFunction(values)
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.addWidget(self.progress_bar)
+
+        self.setLayout(self.main_layout)

@@ -2,8 +2,8 @@
 Progress bar interface
 """
 
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
+from PyQt5.QtCore import QSize, pyqtSignal, Qt
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 
 from .progress_bar_widget import ProgressBarWidget
 from .timestamp_widget import TimestampWidget
@@ -16,14 +16,11 @@ class ProgressBarInterface(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.steps = 20
-        self.orientation = Qt.Orientation.Horizontal
-
         # Widget Layout
         self.progress_layout = QVBoxLayout()
 
         # Progress widget
-        self.progress_widget = ProgressBarWidget(self.steps, self.orientation, self)
+        self.progress_widget = ProgressBarWidget(self)
 
         # Timestamp widget
         self.timestamp_widget = TimestampWidget(self)
@@ -33,7 +30,14 @@ class ProgressBarInterface(QWidget):
     def setup_ui(self):
         """Setup ui"""
 
+        # self.setFixedSize(QSize(200, 120))
+        self.progress_layout.setContentsMargins(110, 0, 110, 0)
+
         self.progress_layout.addWidget(self.progress_widget)
         self.progress_layout.addWidget(self.timestamp_widget)
+
+        self.progress_layout.setAlignment(Qt.AlignHCenter)
+        #self.progress_layout.setContentsMargins(0, 0, 0, 0)
+        self.progress_layout.setSpacing(0)
 
         self.setLayout(self.progress_layout)

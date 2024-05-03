@@ -8,14 +8,7 @@ from PyQt5.QtCore import Qt, QSize, QPointF
 
 from qframelesswindow import FramelessMainWindow, StandardTitleBar
 
-# from album_cover_interface.album_cover_interface import AlbumCoverInterface
-# from song_info_interface.song_info_interface import SongInfoInterface
-# from progress_bar_interface.progress_bar_interface import ProgressBarInterface
-# from playback_control_interface.playback_control_interface import (
-#    PlaybackControlInterface,
-# )
-# from volume_control_interface.volume_control_interface import VolumeControlInterface
-# from menu_control_interface.menu_control_interface import MenuControlInterface
+from Components.custom_window import CustomWindow
 
 from View.album_cover_interface import AlbumCoverInterface
 from View.song_info_interface import SongInfoInterface
@@ -24,39 +17,47 @@ from View.playback_control_interface import PlaybackControlInterface
 from View.volume_control_interface import VolumeControlInterface
 from View.menu_control_interface import MenuControlInterface
 
-from Common.image_utils import (
-    get_rounded_pixmap,
-    get_image_primary_color,
-    get_image_color_palette,
-)
+from Common.image_utils import get_image_color_palette
+
 from Common.style_sheet import setStyleSheet
 from Common import resources
 
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test-2.jpg"
+
 
 
 class CustomTitleBar(StandardTitleBar):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.minBtn.setHoverColor(Qt.white)
-        self.minBtn.setHoverBackgroundColor(QColor(0, 100, 182))
+        self.closeBtn.setHoverBackgroundColor(Qt.white)
+        self.closeBtn.setHoverColor(Qt.black)
+        self.minBtn.setHoverColor(Qt.black)
+        self.minBtn.setHoverBackgroundColor(Qt.white)
         self.minBtn.setPressedColor(Qt.white)
         self.maxBtn.hide()
 
 
 class MainWindowUI(FramelessMainWindow):
+    repaint_flag = True
     def __init__(self, parent=None):
         # Window configuration
         super().__init__(parent=parent)
+        ### Provisionalmente
+        self.colors = get_image_color_palette(ALBUM_COVER)
+        ###
 
         self.createWidgets()
 
         self.initWidgets()
 
+
+
     def createWidgets(self):
         """Create widgets"""
+        # Custom main widget
+        #self.canvas = CustomWindow(self)
 
         # Player widget
         self.playerWidget = QWidget()
@@ -89,11 +90,11 @@ class MainWindowUI(FramelessMainWindow):
         # The album cover layout is added to the main layout
         self.playerLayout.addWidget(self.album_cover)
 
-        # The song info layout is added to the main
-        self.playerLayout.addWidget(self.song_info)
-
         # The slider layout is added to the main layout
         self.playerLayout.addWidget(self.progress_bar)
+
+        # The song info layout is added to the main
+        self.playerLayout.addWidget(self.song_info)
 
         # We add the control layout to the main layout
         self.playerLayout.addWidget(self.playback_control)
@@ -120,8 +121,11 @@ class MainWindowUI(FramelessMainWindow):
         self.setFixedSize(QSize(530, 700))
 
         # set window stylesheet
-        self.setObjectName("mainWindow")
+        self.setObjectName("main_window")
         self.setQss()
+
+        self.show()
+        QApplication.processEvents()
 
     def setQss(self):
         setStyleSheet(self, "main_window")
@@ -130,8 +134,7 @@ class MainWindowUI(FramelessMainWindow):
         # Main layout configuration
         self.playerLayout.setContentsMargins(10, 20, 10, 20)
 
-    def paintEvent(self, event):
-
+    def setWindowEffect(self):
         ### Provisionalmente
         self.colors = get_image_color_palette(ALBUM_COVER)
         ###
@@ -177,26 +180,45 @@ class MainWindowUI(FramelessMainWindow):
             painter.setBrush(gradient)
             painter.drawRect(self.rect())
 
+    def paintEvent(self, event):
+           painter = QPainter(self)
+           painter.setRenderHint(QPainter.Antialiasing)
 
-if __name__ == "__main__":
-    import sys
+           # Define the background colors
+           background_colors = [
+               QColor(
+                   self.colors[0][0], self.colors[0][1], self.colors[0][2]
+               ),  # Sample background color 0
+               QColor(
+                   self.colors[2][0], self.colors[2][1], self.colors[2][2]
+               ),  # Sample background color 0Color(),  # Sample background color 1
+               QColor(
+                   self.colors[1][0], self.colors[1][1], self.colors[1][2]
+               ),  # Sample background color 0QColor(0, 0, 255)  # Sample background color 2
+           ]
 
-    # enable dpi scale
-    QApplication.setHighDpiScaleFactorRoundingPolicy(
-        Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
-    )
-    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
-    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    # sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
+           # Define the gradient angles
+           gradient_angles = [
+               (QPointF(0, 0), QPointF(self.width(), self.height())),
+               (QPointF(0, self.height()), QPointF(self.width(), 0)),
+               (QPointF(self.width(), 0), QPointF(0, self.height())),
+           ]
 
-    app = QApplication(sys.argv)
-    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+           for i, (start_point, end_point) in enumerate(gradient_angles):
+               gradient = QLinearGradient(start_point, end_point)
 
-    colors = get_image_color_palette(ALBUM_COVER)
-    main_window = Window(colors)
-    ui = MainWindowUI(main_window, app)
-    # ui.initWidget(main_window)
+               # Set the color stops with varying opacity
+               gradient.setColorAt(0, background_colors[i].lighter(120))
+               gradient.setColorAt(
+                   0.7071,
+                   QColor(
+                       background_colors[i].red(),
+                       background_colors[i].green(),
+                       background_colors[i].blue(),
+                       0,
+                   ),
+               )
 
-    main_window.show()
+               painter.setBrush(gradient)
+               painter.drawRect(self.rect())
 
-    app.exec()

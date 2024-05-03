@@ -2,7 +2,7 @@
 Timestamp widget
 """
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QSizePolicy
 
 
@@ -23,6 +23,9 @@ class TimestampWidget(QWidget):
         self.setup_ui()
 
     def setup_ui(self):
+
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
+
         self.time_left_label.setObjectName("left-timestamp")
         self.time_current_label.setObjectName("current-timestamp")
 
@@ -33,12 +36,12 @@ class TimestampWidget(QWidget):
         self.time_left_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.time_current_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.time_left_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
         )
         self.time_current_label.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+            QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed
         )
-
+        #self.setFixedSize(QSize(230, 30))
         self.main_layout.addWidget(self.time_current_label)
         self.main_layout.addWidget(self.time_left_label)
 

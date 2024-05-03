@@ -1,31 +1,21 @@
+"""
+Custom main widget
+"""
+
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtGui import QPainter, QColor, QLinearGradient
 from PyQt5.QtCore import Qt, QPointF
+from Common.image_utils import get_image_color_palette
 
-from qframelesswindow import FramelessMainWindow, StandardTitleBar
+ALBUM_COVER = "resource/images/test-images/album-cover-test-3.jpg"
 
-
-class CustomTitleBar(StandardTitleBar):
-    def __init__(self, parent):
-        super().__init__(parent)
-
-        self.minBtn.setHoverColor(Qt.white)
-        self.minBtn.setHoverBackgroundColor(QColor(0, 100, 182))
-        self.minBtn.setPressedColor(Qt.white)
-        self.maxBtn.hide()
-
-
-class Window(FramelessMainWindow):
-    def __init__(self, colors: list, parent=None):
+class CustomWindow(QWidget):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
-        self.colors = colors
-        self.setTitleBar(CustomTitleBar(self))
-        # self.setWindowTitle("PyQt-Frameless-Window")
-        self.titleBar.raise_()
-        # self.titleBar.layout().insertWidget(0, menuBar, 0, Qt.AlignLeft)
-        self.titleBar.layout().insertStretch(1, 1)
-        self.setMenuWidget(self.titleBar)
+
 
     def paintEvent(self, event):
+        self.colors = get_image_color_palette(ALBUM_COVER)
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 

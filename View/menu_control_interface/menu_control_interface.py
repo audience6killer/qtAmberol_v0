@@ -15,6 +15,8 @@ class MenuControlInterface(QWidget):
 
         self.main_layout = QVBoxLayout()
 
+        self.setup_ui()
+
     def setup_ui(self):
         """Setup ui"""
 

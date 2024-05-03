@@ -61,7 +61,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Steps attributes
         self.setSteps(steps)
         self._steps_data = []  # type: List[Dict[str, any]]
-        self._bar_solid_percent = 0.7
+        self._bar_solid_percent = 0.5
 
         self.__updateStepsAttributes()
 
