@@ -44,5 +44,13 @@ class PlaybackControlWidget(QWidget):
         self.main_layout.addWidget(self.play_button)
         self.main_layout.addWidget(self.next_button)
 
+        self.setWidgetsTooltip()
+
         # We add the control layout to the main layout
         self.setLayout(self.main_layout)
+
+    def setWidgetsTooltip(self):
+        """ Sets tooltip for all buttons"""
+        self.play_button.setToolTip("Play")
+        self.next_button.setToolTip("Next")
+        self.previous_button.setToolTip("Previous")

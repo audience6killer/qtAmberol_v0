@@ -48,7 +48,14 @@ class VolumeControlWidget(QWidget):
         self.main_layout.addWidget(self.volume_widget)
         self.main_layout.addWidget(self.volume_up_button)
 
+        self.setWidgetsTooltip()
+
         self.setLayout(self.main_layout)
 
     def setSliderColor(self, color: QColor):
         self.volume_widget.setColor(color)
+
+    def setWidgetsTooltip(self):
+        """ Set tooltip for all buttons"""
+        self.volume_up_button.setToolTip("Volume Up")
+        self.volume_mute_button.setToolTip("Mute")

@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt, QSize
 
 from Common.image_utils import get_rounded_pixmap
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test-4.jpg"
 
 
 class AlbumCoverWidget(QWidget):
