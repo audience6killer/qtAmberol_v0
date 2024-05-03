@@ -43,7 +43,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         )
 
         # Widget styling
-        self._step_color = ["#49006a"]
+        self._step_color = QtGui.QColor(100, 100, 100)
         self._addpage_style = self.AddPageStyle.Empty
 
         # Widget orientation
@@ -61,7 +61,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Steps attributes
         self.setSteps(steps)
         self._steps_data = []  # type: List[Dict[str, any]]
-        self._bar_solid_percent = 0.7
+        self._bar_solid_percent = 0.5
 
         self.__updateStepsAttributes()
 
@@ -88,7 +88,7 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         elif isinstance(steps, int):
             self.n_steps = steps
-            self.steps = steps * self._step_color
+            self.steps = steps * [1]
 
         else:
             raise TypeError("Steps must be a list or int")
@@ -129,7 +129,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Draw active steps
 
         for n in range(n_active_steps):
-            active_step_color = QtGui.QColor(self.steps[n])
+            active_step_color = self._step_color
 
             if self._is_hovering and n >= self._hovering_step:
                 active_step_color = active_step_color.lighter(150)
@@ -147,9 +147,9 @@ class SegmentedSlider(QtWidgets.QWidget):
             # We start to draw the add page where the active pages ended
             for n in range(n_active_steps, self.n_steps):
                 # The colors should be according with the last actual page color placed
-                inactive_step_color = QtGui.QColor(self.steps[n]).lighter(300)
+                inactive_step_color = self._step_color.lighter(200)
                 if self._is_hovering and n < self._hovering_step:
-                    inactive_step_color = inactive_step_color.darker(150)
+                    inactive_step_color = self._step_color
 
                 rect = QtCore.QRectF(
                     self._steps_data[n]["pos"],
@@ -213,10 +213,10 @@ class SegmentedSlider(QtWidgets.QWidget):
         active_pct = 0.0
 
         if self._orientation == Qt.Orientation.Vertical:
-            click_pos = e.position().y() - self._padding - self._step_size
+            click_pos = e.pos().y() - self._padding - self._step_size
             active_pct = (self.canvas_height - click_pos) / self.canvas_height
         elif self._orientation == Qt.Orientation.Horizontal:
-            click_pos = e.position().x() - self._padding + self._step_size
+            click_pos = e.pos().x() - self._padding + self._step_size
             active_pct = (self.canvas_width - click_pos) / self.canvas_width
 
         hover_value = int(self._vmin + active_pct * (self._vmax - self._vmin))
@@ -242,12 +242,12 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         if self._orientation == Qt.Orientation.Vertical:
             # self._step_size = self.canvas_height / self.n_steps
-            click_pos = e.position().y() - self._padding - self._step_size
+            click_pos = e.pos().y() - self._padding - self._step_size
             active_pct = (self.canvas_height - click_pos) / self.canvas_height
 
         elif self._orientation == Qt.Orientation.Horizontal:
             # self._step_size = self.canvas_width / self.n_steps
-            click_pos = e.position().x() - self._padding + self._step_size
+            click_pos = e.pos().x() - self._padding + self._step_size
             active_pct = (self.canvas_width - click_pos) / self.canvas_width
             # active_pct = 1 - active_pct
             # active_pct = (click_pos - self.canvas_width) / self.canvas_width
@@ -284,9 +284,10 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         return super().eventFilter(obj, e)
 
-    def setColor(self, color):
+    def setColor(self, color: QtGui.QColor):
         """Sets an uniform color for all steps"""
-        self.steps = [color] * self.n_steps
+        #self.steps = [color] * self.n_steps
+        self._step_color = color
         self.triggerRefresh(update_steps=False)
 
     def setPadding(self, padding):

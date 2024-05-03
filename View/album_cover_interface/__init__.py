@@ -1,0 +1,1 @@
+from .album_cover_interface import AlbumCoverInterface
