@@ -23,7 +23,7 @@ from Common.parse_stylesheet import generate_css
 from Common import resources
 
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test-4.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
 
 
 class CustomTitleBar(StandardTitleBar):
@@ -148,13 +148,13 @@ class MainWindowUI(FramelessMainWindow):
          # Define the background colors
         background_colors = [
             QColor(
-                self.colors[0][0], self.colors[0][1], self.colors[0][2]
+                self.colors[0][0], self.colors[0][1], self.colors[0][2], int(255*0.7)
             ),  # Sample background color 0
             QColor(
-                self.colors[2][0], self.colors[2][1], self.colors[2][2]
+                self.colors[1][0], self.colors[1][1], self.colors[1][2], int(255*0.7)
             ),  # Sample background color 0Color(),  # Sample background color 1
             QColor(
-                self.colors[1][0], self.colors[1][1], self.colors[1][2]
+                self.colors[2][0], self.colors[2][1], self.colors[2][2], int(255*0.7)
             ),  # Sample background color 0QColor(0, 0, 255)  # Sample background color 2
         ]
 

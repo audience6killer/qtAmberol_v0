@@ -1,7 +1,7 @@
 QPushButton {
   border-radius: 25px;
-  /*border: 1px solid rgba(62, 46, 37, 0.8);*/
-  background-color: rgba(62, 37, 46, 0.2);
+  /*border: 1px solid rgba(95, 182, 84, 0.8);*/
+  background-color: rgba(95, 84, 182, 0.3);
 }
 
 QPushButton#mute-button, #volume-up {
@@ -13,12 +13,12 @@ QPushButton#menu-button, #shuffle-button, #repeat-button, #playlist-button {
 }
 
 QPushButton:hover {
-  border: 1px solid rgba(62, 37, 46, 0.5);
-  background-color: rgba(62, 37, 46, 0.3);
+  border: 1px solid rgba(95, 84, 182, 0.7);
+  background-color: rgba(95, 84, 182, 0.4);
 }
 
 QPushButton:focus {
- border: 1px solid rgba(62, 37, 46, 0.5);
+ border: 1px solid rgba(95, 84, 182, 0.7);
 }
 
 QLabel#track-title {
@@ -39,8 +39,8 @@ QLabel#left-timestamp, #current-timestamp {
 }
 
 QToolTip {
-    background-color: rgba(62, 37, 46, 0.2);
-    border: 1px solid rgb(62, 37, 46);
+    background-color: rgba(95, 84, 182, 0.3);
+    border: 1px solid rgb(95, 84, 182);
     padding: 3px;
     /*border-radius: 10px;*/
     color: white;
