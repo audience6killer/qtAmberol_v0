@@ -15,15 +15,14 @@ from View.playback_control_interface import PlaybackControlInterface
 from View.volume_control_interface import VolumeControlInterface
 from View.menu_control_interface import MenuControlInterface
 
-from Common.image_utils import get_image_color_palette
-from Common.image_utils import get_image_primary_color
+from Common.image_utils import ColorPalette
 
 from Common.style_sheet import setStyleSheet
 from Common.parse_stylesheet import generate_css
 from Common import resources
 
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test-11.jpg"
 
 
 class CustomTitleBar(StandardTitleBar):
@@ -45,9 +44,10 @@ class MainWindowUI(FramelessMainWindow):
         super().__init__(parent=parent)
 
         ### Provisionalmente
-        self.colors = get_image_color_palette(ALBUM_COVER)
+        colors = ColorPalette(ALBUM_COVER)
+        self.colors = colors.get_min_contrast_palette()
 
-        self.primary_color = self.colors[0]
+        self.primary_color = colors.get_dominant_color()
         ## Provisionalmente
 
         self.createWidgets()

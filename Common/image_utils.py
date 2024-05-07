@@ -1,7 +1,10 @@
 from PyQt5.QtGui import QPixmap, QColor, QPainter, QBrush
 from PyQt5.QtCore import Qt
 from colorthief import ColorThief
+import numpy as np
+
 import colorsys
+import itertools
 
 
 def get_rounded_pixmap(pixmap: QPixmap, radius=25) -> QPixmap:
@@ -24,100 +27,162 @@ def get_rounded_pixmap(pixmap: QPixmap, radius=25) -> QPixmap:
     return rounded
 
 
-def get_image_color_palette(img_path: str) -> list:
-    #color_thief = ColorThief(img_path)
-    #palette = color_thief.get_palette(color_count=2, quality=5)
+class Color:
+    def __init__(self, rgb: tuple, priority: int):
+        self.rgb = rgb
+        self.priority = priority
+        self.color_luminance = 0
+        self.primary_relative_contrast = 0.0
+        self.total_palette_contrast = 0.0
 
-    palette = ColorPalette.get_image_palette(img_path)
+        self.calculate_color_luminance()
 
-    return palette
+    def __repr__(self):
+        return "#{:02x}{:02x}{:02x}".format(self.rgb[0], self.rgb[1], self.rgb[2])
 
+    def calculate_primary_relative_cr(self, p_color):
+        L1 = p_color.color_luminance()
+        L2 = self.color_luminance
+        self.primary_relative_contrast = (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+        return
 
-def get_image_primary_color(img_path: str) -> tuple:
-    colorthief = ColorThief(img_path)
-    primary_color = colorthief.get_color(quality=5)
-    return primary_color
+    def calculate_weighted_contrast_ratio(self, palette: list):
+        def recursive_fn(palette, cr_sum=0.0):
+            if len(palette):
+                s_color = palette[-1]
+                if s_color.priority != self.priority:
+                    L1 = s_color.color_luminance
+                    L2 = self.color_luminance
+                    cr_sum += s_color.priority * (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+                return recursive_fn(palette[:-1], cr_sum=cr_sum)
+            else:
+                return cr_sum
 
-
-class ColorPalette:
-    @classmethod
-    def get_image_palette(cls, img_path: str) -> list:
-        """
-        Get image color palette with low contrast between colors
-        """
-        color_thief = ColorThief(img_path)
-
-        if max(color_thief.image.size) > 500:
-            color_thief.image = color_thief.image.resize((400, 400))
-
-        palette = color_thief.get_palette(color_count=6, quality=9)
-
-        color_luminance = [cls.get_color_luminance(cls.normalize_color(color)) for color in palette]
-
-        # Sum color contrast ratio between all colors
-        color_contrast_r = [cls.get_contrast_ratio(color, color_luminance) / len(color_luminance)
-                            for color in color_luminance]
-
-        primary_contrast = [{'contrast': cls.get_single_contrast_ratio(palette[0], palette[i]),
-                             'color': palette[i]} for i in range(1, len(palette)-1)]
-        primary_contrast = sorted(primary_contrast, key=lambda d: d['contrast'])
-
-        relative_to_primary = [{'color': palette[0], 'contrast': 0.0}, *primary_contrast[:2]]
-        relative_to_primary = [color['color'] for color in relative_to_primary]
-
-        color_obj = [{'color': palette[i], 'contrast': color_contrast_r[i]} for i in range(len(palette))]
-        color_obj = sorted(color_obj, key=lambda d: d['contrast'])
-
-        # low contrast include the primary color
-        low_contrast = color_obj[:3]
-        high_contrast = color_obj[3:]
-
-        low_contrast = [color['color'] for color in low_contrast]
-        high_contrast = [color['color'] for color in high_contrast]
-
-        hex_colors = ["#{:02x}{:02x}{:02x}".format(c[0], c[1], c[2]) for c in palette]
-        low_contrast_hex = ["#{:02x}{:02x}{:02x}".format(c[0], c[1], c[2]) for c in low_contrast]
-        high_contrast_hex = ["#{:02x}{:02x}{:02x}".format(c[0], c[1], c[2]) for c in high_contrast]
-        primary_contrast_hex = ["#{:02x}{:02x}{:02x}".format(c[0], c[1], c[2]) for c in relative_to_primary]
-        print(f"Color luminance: {color_luminance}")
-        print(f"Color luminance avg: {sum(color_luminance) / len(color_luminance)}")
-        print(f"Color contrast: {color_contrast_r}")
-        print(f"Color contrast svg: {sum(color_contrast_r) / len(color_contrast_r)}")
-        print(f"Colors: {hex_colors}")
-        print(f"Low Contrast: {low_contrast_hex}")
-        print(f"High Contrast: {high_contrast_hex}")
-        print(f"Primary Contrast: {primary_contrast_hex}\n\n")
-
-        return relative_to_primary
-
-    @classmethod
-    def get_contrast_ratio(cls, color: float, comp: list, cr_sum=0.0):
-        if len(comp):
-            L1 = color
-            L2 = comp[-1]
-            cr_sum += (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
-            return cls.get_contrast_ratio(color, comp[:-1], cr_sum=cr_sum)
-        else:
-            return cr_sum
-
-    @classmethod
-    def get_single_contrast_ratio(cls, p_color: tuple, s_color: tuple) -> float:
-        L1 = cls.get_color_luminance(p_color)
-        L2 = cls.get_color_luminance(s_color)
-        return (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+        self.total_palette_contrast = recursive_fn(palette) / sum(list(map(lambda x: x.priority, palette)))
 
     @staticmethod
-    def get_color_luminance(color: tuple) -> float:
+    def calculate_two_colors_contrast_ratio(p_color, s_color):
+        L1 = p_color.color_luminance
+        L2 = s_color.color_luminance
+        return min(p_color.priority, s_color.priority) * (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+
+    def calculate_color_luminance(self):
         """
         Relative luminance
         """
-        return 0.2126 * color[0] + 0.7152 * color[1] + 0.0722 * color[2]
-
-    @staticmethod
-    def rgb2hsv(color: tuple) -> tuple:
-        norm_color = [channel / 255.0 for channel in color]
-        return colorsys.rgb_to_hsv(*norm_color)
+        n_color = tuple([channel / 255.0 for channel in self.rgb])
+        self.color_luminance = 0.2126 * n_color[0] + 0.7152 * n_color[1] + 0.0722 * n_color[2]
 
     @staticmethod
     def normalize_color(color: tuple) -> tuple:
         return tuple([channel / 255.0 for channel in color])
+
+
+class ColorPalette:
+    def __init__(self, img_path: str, subpalette_size=3):
+        self.color_thief = ColorThief(img_path)
+        if max(self.color_thief.image.size) > 500:
+            self.color_thief.image = self.color_thief.image.resize((400, 400))
+
+        self.palette_tuple = self.color_thief.get_palette(color_count=6, quality=9)
+        self.palette_list = [Color(rgb=value, priority=index + 1) for index, value in enumerate(self.palette_tuple)]
+        self.combinations = self.list_combinations(self.palette_tuple, subpalette_size)
+        self.subpalette_combinations = self.list_combinations(self.combinations[0], 2)
+        self.subpalette_list = [{'palette': (self.palette_list[c[0]], self.palette_list[c[1]], self.palette_list[c[2]]),
+                                 'cr': 0.0} for c in self.combinations]
+
+        self.primary_color = (0, 0, 0)
+        self.calculate_sub_palette_cr()
+
+    def calculate_sub_palette_cr(self):
+        """ Calculate subpalette contrast ratio"""
+        for palette in self.subpalette_list:
+            wg_avg = 0.0
+            for comb in self.subpalette_combinations:
+                palette['cr'] += self.calculate_two_colors_cr(palette['palette'][comb[0]], palette['palette'][comb[1]])
+                wg_avg += min(palette['palette'][comb[0]].priority, palette['palette'][comb[1]].priority)
+
+            palette['cr'] /= wg_avg
+
+        self.subpalette_list = sorted(self.subpalette_list, key=lambda x: x['cr'])
+        print(self.subpalette_list)
+
+    def get_min_contrast_palette(self):
+        return [color.rgb for color in self.subpalette_list[0]['palette']]
+
+    def get_primary_min_contrast_palette(self):
+        """ Get palette with the primary color and the minimum contrast ratio"""
+        r_palette = None
+        for palette in self.subpalette_list:
+            if self.palette_tuple[0] in [x.rgb for x in palette['palette']]:
+                r_palette = [x.rgb for x in palette['palette']]
+        return r_palette
+
+
+    def get_dominant_color(self):
+        """
+        Estracted from: https://www.cnblogs.com/zhiyiYo/p/15815866.html
+        """
+        # 调整调色板明度
+        palette = self.__adjust_palette_value(self.palette_tuple)
+        for rgb in palette[:]:
+            h, s, v = colorsys.rgb_to_hsv(*rgb)
+            if h < 0.02:
+                palette.remove(rgb)
+                if len(palette) <= 2:
+                    break
+
+        # 挑选主题色
+        palette = palette[:5]
+        palette.sort(key=lambda rgb: self.colorfulness(*rgb), reverse=True)
+
+        self.primary_color = [int(channel) for channel in palette[0]]
+
+        return self.primary_color
+
+    @staticmethod
+    def calculate_two_colors_cr(p_color: Color, s_color: Color):
+        L1 = p_color.color_luminance
+        L2 = s_color.color_luminance
+        return min(p_color.priority, s_color.priority) * (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+
+    @staticmethod
+    def list_combinations(palette, no_groups: int):
+        return list(itertools.combinations([index for index, value in enumerate(palette)], no_groups))
+
+    @classmethod
+    def __adjust_palette_value(cls, palette: list):
+        """ 调整调色板的明度 """
+        newPalette = []
+        for rgb in palette:
+            h, s, v = colorsys.rgb_to_hsv(*rgb)
+
+            if v > 0.9:
+                factor = 0.8
+            elif 0.8 < v <= 0.9:
+                factor = 0.9
+            elif 0.7 < v <= 0.8:
+                factor = 0.95
+            else:
+                factor = 1
+
+            v *= factor
+            newPalette.append(colorsys.hsv_to_rgb(h, s, v))
+
+        return newPalette
+
+    @staticmethod
+    def colorfulness(r: int, g: int, b: int):
+        rg = np.absolute(r - g)
+        yb = np.absolute(0.5 * (r + g) - b)
+
+        rg_mean, rg_std = np.mean(rg), np.std(rg)
+        yb_mean, yb_std = np.mean(yb), np.std(yb)
+
+        std_root = np.sqrt(rg_std ** 2 + yb_std ** 2)
+        mean_root = np.sqrt(rg_mean ** 2 + yb_mean ** 2)
+
+        return std_root + 0.3 * mean_root
+
+
+

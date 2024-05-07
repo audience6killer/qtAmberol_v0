@@ -7,9 +7,9 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QGraphicsDropShadowEff
 from PyQt5.QtGui import QPixmap, QColor
 from PyQt5.QtCore import Qt, QSize
 
-from Common.image_utils import get_rounded_pixmap, ColorPalette
+from Common.image_utils import get_rounded_pixmap
 
-ALBUM_COVER = "resource/images/test-images/album-cover-test.jpg"
+ALBUM_COVER = "resource/images/test-images/album-cover-test-11.jpg"
 
 
 class AlbumCoverWidget(QWidget):
@@ -17,8 +17,6 @@ class AlbumCoverWidget(QWidget):
         super().__init__(parent)
 
         self.setup_ui()
-
-        we = ColorPalette.get_image_palette(ALBUM_COVER)
 
     def setup_ui(self):
         self.cover_layout = QHBoxLayout()

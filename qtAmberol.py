@@ -10,7 +10,6 @@ from PyQt5.QtCore import Qt
 os.chdir(Path(getsourcefile(lambda: 0)).resolve().parent)
 
 from View.main_window import MainWindowUI
-from Common.image_utils import get_image_color_palette
 
 ALBUM_COVER = "./resource/images/test-images/album-cover-test.jpg"
 
@@ -23,7 +22,7 @@ QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 app = QApplication(sys.argv)
 # app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 
-colors = get_image_color_palette(ALBUM_COVER)
+#colors = get_image_color_palette(ALBUM_COVER)
 ui = MainWindowUI()
 # ui.setup_ui(main_window)
 
