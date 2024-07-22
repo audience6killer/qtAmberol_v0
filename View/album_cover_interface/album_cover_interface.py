@@ -25,5 +25,5 @@ class AlbumCoverInterface(QWidget):
 
         self.setLayout(self.main_layout)
 
-    def updateCoverImage(self, arg):
-        pass
+    def updateCoverImage(self, cover):
+        self.album_cover.updateCoverArt(cover)

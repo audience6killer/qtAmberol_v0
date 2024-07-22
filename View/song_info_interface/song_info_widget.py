@@ -54,8 +54,8 @@ class SongInfoWidget(QWidget):
         # The layout is set in parent
         self.setLayout(self.info_layout)
 
-    def update_info(self, info: list):
+    def update_info(self, info: dict):
         """Update song info"""
-        self.track_album.setText(info[0])
-        self.track_title.setText(info[1])
-        self.track_artist.setText(info[2])
+        self.track_title.setText(info['Title'])
+        self.track_artist.setText(info['AlbumArtist'])
+        self.track_album.setText(info['AlbumTitle'])

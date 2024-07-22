@@ -2,13 +2,19 @@
 Menu control widget
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QFileDialog
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
+
+from Common.signal_bus import signal_bus
+
 from Common import resources
+
+from .main_menu import MainMenu
 
 
 class MenuControlWidget(QWidget):
+
     def __init__(self, parent=None):
 
         super().__init__(parent)
@@ -22,6 +28,8 @@ class MenuControlWidget(QWidget):
         self.enable_repeat = QPushButton()
 
         self.playlist_button = QPushButton()
+
+        self.main_menu = MainMenu()
 
         self.setup_ui()
 
@@ -61,9 +69,21 @@ class MenuControlWidget(QWidget):
 
         self.setLayout(self.main_layout)
 
+        self.__connectSignalsToSlots()
+
     def setWidgetsTooltip(self):
         """ Set tooltip for all buttons"""
         self.menu_button.setToolTip("Main menu")
         self.enable_repeat.setToolTip("Enable repeat")
         self.playlist_button.setToolTip("Show playlist")
         self.shuffle_playlist.setToolTip("Shuffle playlist")
+
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        self.menu_button.clicked.connect(self.openMenuPopup)
+
+    def openMenuPopup(self):
+        """Menu popup"""
+        button_position = self.menu_button.mapToGlobal(self.menu_button.rect().topLeft())
+        button_position.setY(button_position.y() - 230)
+        self.main_menu.openMenu(button_position)

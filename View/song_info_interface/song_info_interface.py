@@ -23,5 +23,5 @@ class SongInfoInterface(QWidget):
 
         self.setLayout(self.main_layout)
 
-    def update_song_info(self, info: list):
+    def update_song_info(self, info: dict):
         self.info_widget.update_info(info)

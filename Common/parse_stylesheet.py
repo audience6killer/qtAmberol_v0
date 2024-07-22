@@ -1,16 +1,16 @@
 import colorsys
 
-def determine_alpha_channel(current_color: list):
+
+def determine_color_degradation(current_color: list):
     [red, green, blue] = [n_color / 255 for n_color in current_color]
 
     [h, s, v] = colorsys.rgb_to_hsv(red, green, blue)
 
-    if v > s:
-        [alpha_bg, alpha_border, alpha_bg_hover] = [0.3, 0.7, 0.4]
-    else:
-        [alpha_bg, alpha_border, alpha_bg_hover] = [0.2, 0.5, 0.3]
+    bg_color = current_color
+    border_color = [int(ch * 255) for ch in colorsys.hsv_to_rgb(h, s, v * 0.80)]
+    hover_color = [int(ch * 255) for ch in colorsys.hsv_to_rgb(h, s, v * 1.30)]
 
-    return [alpha_bg, alpha_border, alpha_bg_hover]
+    return [bg_color, border_color, hover_color]
 
 
 def generate_css(current_color: list):
@@ -20,12 +20,20 @@ def generate_css(current_color: list):
     if len(current_color) > 3:
         raise IndexError
 
-    [red, green, blue] = current_color
-    [alpha_bg, alpha_border, alpha_bg_hover] = determine_alpha_channel(current_color)
+    [bg_color, border_color, hover_color] = determine_color_degradation(current_color)
+    [alpha_bg, alpha_border, alpha_bg_hover] = [0.3, 0.3, 0.3]
 
-    stylesheet = stylesheet.replace('$red', str(red))
-    stylesheet = stylesheet.replace('$blue', str(blue))
-    stylesheet = stylesheet.replace('$green', str(green))
+    print(f"{bg_color} {border_color} {hover_color}")
+
+    stylesheet = stylesheet.replace('$red_bg', str(bg_color[0]))
+    stylesheet = stylesheet.replace('$blue_bg', str(bg_color[2]))
+    stylesheet = stylesheet.replace('$green_bg', str(bg_color[1]))
+    stylesheet = stylesheet.replace('$red_hover', str(hover_color[0]))
+    stylesheet = stylesheet.replace('$blue_hover', str(hover_color[2]))
+    stylesheet = stylesheet.replace('$green_hover', str(hover_color[1]))
+    stylesheet = stylesheet.replace('$red_border', str(border_color[0]))
+    stylesheet = stylesheet.replace('$blue_border', str(border_color[2]))
+    stylesheet = stylesheet.replace('$green_border', str(border_color[1]))
     stylesheet = stylesheet.replace('$alpha_bg_normal', str(alpha_bg))
     stylesheet = stylesheet.replace('$alpha_border', str(alpha_border))
     stylesheet = stylesheet.replace('$alpha_bg_hover', str(alpha_bg_hover))

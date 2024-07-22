@@ -17,7 +17,7 @@ TODO:   Fix colors saturation
 
 class SegmentedSlider(QtWidgets.QWidget):
 
-    clicked_value = QtCore.pyqtSignal(int)
+    clicked_value_signal = QtCore.pyqtSignal(int)
 
     class AddPageStyle(Enum):
         Empty = 0
@@ -35,6 +35,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Events flags
         self._is_clicked = False
         self._is_hovering = False
+        self._is_manually_increased = False
 
         # Widget to expand within its parent
         self.setSizePolicy(
@@ -44,6 +45,8 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         # Widget styling
         self._step_color = QtGui.QColor(100, 100, 100)
+        self._hover_color = self._step_color.darker(100)
+        self._inactive_color = self._step_color.lighter(100)
         self._addpage_style = self.AddPageStyle.Empty
 
         # Widget orientation
@@ -59,6 +62,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         self._background_color = QtGui.QColor("transparent")
 
         # Steps attributes
+        self.n_active_steps = 0
         self.setSteps(steps)
         self._steps_data = []  # type: List[Dict[str, any]]
         self._bar_solid_percent = 0.5
@@ -122,17 +126,20 @@ class SegmentedSlider(QtWidgets.QWidget):
         ## Draw the bars
 
         # Calculate the y-stop position, from the value in range.
-        selected_step = (self._value - self._vmin) / (self._vmax - self._vmin)
-        n_active_steps = int(selected_step * self.n_steps)
-        n_active_steps = max(min(n_active_steps, self.n_steps), 0)
+        if not self._is_manually_increased:
+            selected_step = (self._value - self._vmin) / (self._vmax - self._vmin)
+            self.n_active_steps = int(selected_step * self.n_steps)
+            self.n_active_steps = max(min(self.n_active_steps, self.n_steps), 0)
+        else:
+            self._is_manually_increased = False
 
         # Draw active steps
 
-        for n in range(n_active_steps):
+        for n in range(self.n_active_steps):
             active_step_color = self._step_color
 
             if self._is_hovering and n >= self._hovering_step:
-                active_step_color = active_step_color.lighter(150)
+                active_step_color = self._hover_color
 
             brush.setColor(active_step_color)
             rect = QRectF(
@@ -145,9 +152,10 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Draw inactive steps
         if self._addpage_style != self.AddPageStyle.Empty:
             # We start to draw the add page where the active pages ended
-            for n in range(n_active_steps, self.n_steps):
-                # The colors should be according with the last actual page color placed
-                inactive_step_color = self._step_color.lighter(200)
+            for n in range(self.n_active_steps, self.n_steps):
+                # The colors should be according to the last actual page color placed
+                inactive_step_color = self._inactive_color
+
                 if self._is_hovering and n < self._hovering_step:
                     inactive_step_color = self._step_color
 
@@ -257,7 +265,10 @@ class SegmentedSlider(QtWidgets.QWidget):
         self._value = (
             value if self._orientation == Qt.Orientation.Vertical else 100 - value
         )
-        self.clicked_value.emit(self._value)
+
+        if not self._is_clicked:
+            self.clicked_value_signal.emit(self._value)
+
         self.triggerRefresh(update_steps=False)
 
     def eventFilter(self, obj, e: QEvent):
@@ -288,6 +299,11 @@ class SegmentedSlider(QtWidgets.QWidget):
         """Sets an uniform color for all steps"""
         #self.steps = [color] * self.n_steps
         self._step_color = color
+        self._inactive_color = self._step_color.lighter(200)
+        self._hover_color = self._step_color.lighter(180)
+        print(f"Primary color: {self._step_color.getHsv()}")
+        print(f"Inactive color: {self._inactive_color.getHsv()}")
+        print(f"Hover color: {self._hover_color.getHsv()}")
         self.triggerRefresh(update_steps=False)
 
     def setPadding(self, padding):
@@ -333,6 +349,13 @@ class SegmentedSlider(QtWidgets.QWidget):
 
     def getCanvasSize(self) -> QSize:
         return QSize(self.canvas_width, self.canvas_height)
+
+    def increaseSliderValue(self):
+        if self.n_active_steps < self.n_steps:
+            self.n_active_steps += 1
+            self._value = ((self._vmax - self._vmin) / self.n_steps) * self.n_active_steps
+            self._is_manually_increased = True
+            self.triggerRefresh(update_steps=False)
 
 
 if __name__ == "__main__":

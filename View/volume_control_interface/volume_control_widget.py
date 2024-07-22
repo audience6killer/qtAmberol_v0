@@ -7,6 +7,9 @@ from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import QSize, Qt
 
 from Components.segmented_slider.segmented_slider import SegmentedSlider
+
+from Common.signal_bus import signal_bus
+
 from Common import resources
 
 
@@ -52,6 +55,8 @@ class VolumeControlWidget(QWidget):
 
         self.setLayout(self.main_layout)
 
+        self.__connectSignalsToSlots()
+
     def setSliderColor(self, color: QColor):
         self.volume_widget.setColor(color)
 
@@ -59,3 +64,17 @@ class VolumeControlWidget(QWidget):
         """ Set tooltip for all buttons"""
         self.volume_up_button.setToolTip("Volume Up")
         self.volume_mute_button.setToolTip("Mute")
+
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        self.volume_mute_button.clicked.connect(signal_bus.mute_volume_signal)
+        self.volume_up_button.clicked.connect(self.increaseVolumeEvent)
+        self.volume_up_button.pressed.connect(self.increaseVolumeEvent)
+        self.volume_widget.clicked_value_signal.connect(signal_bus.volume_scroll_changed_signal)
+
+    def increaseVolumeEvent(self):
+        """Increase volume"""
+        signal_bus.increase_volume_signal.emit()
+        self.volume_widget.increaseSliderValue()
+
+

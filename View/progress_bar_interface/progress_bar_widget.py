@@ -9,6 +9,8 @@ from PyQt5.QtGui import QColor
 
 from Components.segmented_slider.waveform_slider import WaveformSlider
 
+from Common.signal_bus import signal_bus
+
 
 class ProgressBarWidget(QWidget):
 
@@ -44,4 +46,8 @@ class ProgressBarWidget(QWidget):
 
     def setSliderColor(self, color: QColor):
         self.progress_bar.setColor(color)
+
+    def setWaveformValues(self, values: list):
+        """Set waveform values"""
+        self.progress_bar.setWaveformFunction(values)
 

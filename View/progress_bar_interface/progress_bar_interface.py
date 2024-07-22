@@ -9,10 +9,11 @@ from PyQt5.QtGui import QColor
 from .progress_bar_widget import ProgressBarWidget
 from .timestamp_widget import TimestampWidget
 
+from Common.signal_bus import signal_bus
+from Common.audio_waveform import WaveformValuesThread
+
 
 class ProgressBarInterface(QWidget):
-
-    song_position_changed = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -26,7 +27,12 @@ class ProgressBarInterface(QWidget):
         # Timestamp widget
         self.timestamp_widget = TimestampWidget(self)
 
+        # Get waveform values thread
+        self.waveform_thread = WaveformValuesThread()
+
         self.setup_ui()
+
+        self.__connectSignalsToSlots()
 
     def setup_ui(self):
         """Setup ui"""
@@ -44,3 +50,18 @@ class ProgressBarInterface(QWidget):
     def setSliderColor(self, color: QColor):
         self.progress_widget.setSliderColor(color)
 
+    def updateTimeStamp(self, c_time: int, l_time: int):
+        """Update timestamps"""
+        pass
+
+    def __connectSignalsToSlots(self):
+        self.waveform_thread.waveform_finished.connect(self.__onWaveformFinished)
+
+    def __onWaveformFinished(self, values: list):
+        """Waveform values have been acquired"""
+        self.progress_widget.setWaveformValues(values)
+
+    def setWaveformValues(self, path: str):
+        """Set waveform values"""
+        self.waveform_thread.setTrack(path, self.progress_widget.steps)
+        self.waveform_thread.start()
