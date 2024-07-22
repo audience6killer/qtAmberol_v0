@@ -21,7 +21,6 @@ from Common.image_utils import ColorPalette
 from Common.style_sheet import setStyleSheet
 from Common.parse_stylesheet import generate_css
 from Common.signal_bus import signal_bus
-from Common.audio_waveform import get_waveform_values
 
 from Common import resources
 
@@ -254,7 +253,28 @@ class MainWindowUI(FramelessMainWindow):
 
     def trackMetadataChanged(self, values: dict):
         """Track Metadata Changed"""
-        self.song_info.update_song_info({k: values[k] for k in ('AlbumArtist', 'Title', 'AlbumTitle')})
+        song_metadata = {}
+        if 'AlbumArtist' in values:
+            song_metadata['Artist'] = values['AlbumArtist']
+        elif 'Artist' in values:
+            song_metadata['Artist'] = values['Artist']
+        elif 'ContributingArtist' in values:
+            song_metadata['Artist'] = values['ContributingArtist']
+        else:
+            song_metadata['Artist'] = 'Unknown Artist'
+
+        if 'Title' not in values:
+            song_metadata['Title'] = 'Unknown Title'
+        else:
+            song_metadata['Title'] = values['Title']
+
+        if 'AlbumTitle' not in values:
+            song_metadata['AlbumTitle'] = 'Unknown Album'
+        else:
+            song_metadata['AlbumTitle'] = values['AlbumTitle']
+
+        #song_metadata = {k: values[k] for k in ('AlbumArtist', 'Title', 'AlbumTitle')}
+        self.song_info.update_song_info(song_metadata)
 
         if 'CoverArtImage' in values:
             cover = values['CoverArtImage']

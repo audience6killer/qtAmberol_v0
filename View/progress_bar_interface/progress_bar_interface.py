@@ -10,7 +10,7 @@ from .progress_bar_widget import ProgressBarWidget
 from .timestamp_widget import TimestampWidget
 
 from Common.signal_bus import signal_bus
-from Common.audio_waveform import WaveformValuesThread
+from Common.threads.audio_waveform import WaveformValuesThread
 
 
 class ProgressBarInterface(QWidget):
