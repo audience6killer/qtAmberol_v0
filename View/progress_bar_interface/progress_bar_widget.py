@@ -1,6 +1,7 @@
 """
 Progress bar widget
 """
+import math
 import random
 
 from PyQt5.QtCore import QSize, Qt
@@ -18,6 +19,11 @@ class ProgressBarWidget(QWidget):
         super().__init__(parent)
 
         self.steps = 60
+
+        self._track_duration = None     # In milliseconds
+
+        self._duration_to_step_ratio = None
+
         self.orientation = Qt.Orientation.Horizontal
 
         self.progress_bar = WaveformSlider(self.steps, self.orientation, self)
@@ -25,6 +31,8 @@ class ProgressBarWidget(QWidget):
         self.main_layout = QHBoxLayout()
 
         self.setup_ui()
+
+        self.__connectSignalsToSlots()
 
     def setup_ui(self):
         self.progress_bar.setAddPagetyle(WaveformSlider.AddPageStyle.Fill)
@@ -44,6 +52,15 @@ class ProgressBarWidget(QWidget):
 
         self.setLayout(self.main_layout)
 
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        self.progress_bar.clicked_value_signal.connect(signal_bus.progress_bar_clicked_value_signal)
+
+    def setTrackDuration(self, duration: int):
+        """Set track duration"""
+        self._track_duration = duration
+        self._duration_to_step_ratio = self.steps / self._track_duration
+
     def setSliderColor(self, color: QColor):
         self.progress_bar.setColor(color)
 
@@ -51,3 +68,7 @@ class ProgressBarWidget(QWidget):
         """Set waveform values"""
         self.progress_bar.setWaveformFunction(values)
 
+    def updateProgress(self, position):
+        """Update progress"""
+        progress = math.floor(position * self._duration_to_step_ratio)
+        self.progress_bar.setActiveSteps(progress)

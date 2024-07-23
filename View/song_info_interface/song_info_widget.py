@@ -57,5 +57,5 @@ class SongInfoWidget(QWidget):
     def update_info(self, info: dict):
         """Update song info"""
         self.track_title.setText(info['Title'])
-        self.track_artist.setText(info['AlbumArtist'])
+        self.track_artist.setText(info['Artist'])
         self.track_album.setText(info['AlbumTitle'])

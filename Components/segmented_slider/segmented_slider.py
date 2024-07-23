@@ -35,7 +35,7 @@ class SegmentedSlider(QtWidgets.QWidget):
         # Events flags
         self._is_clicked = False
         self._is_hovering = False
-        self._is_manually_increased = False
+        self._is_manually_modified = False
 
         # Widget to expand within its parent
         self.setSizePolicy(
@@ -126,12 +126,12 @@ class SegmentedSlider(QtWidgets.QWidget):
         ## Draw the bars
 
         # Calculate the y-stop position, from the value in range.
-        if not self._is_manually_increased:
+        if not self._is_manually_modified:
             selected_step = (self._value - self._vmin) / (self._vmax - self._vmin)
             self.n_active_steps = int(selected_step * self.n_steps)
             self.n_active_steps = max(min(self.n_active_steps, self.n_steps), 0)
         else:
-            self._is_manually_increased = False
+            self._is_manually_modified = False
 
         # Draw active steps
 
@@ -354,7 +354,14 @@ class SegmentedSlider(QtWidgets.QWidget):
         if self.n_active_steps < self.n_steps:
             self.n_active_steps += 1
             self._value = ((self._vmax - self._vmin) / self.n_steps) * self.n_active_steps
-            self._is_manually_increased = True
+            self._is_manually_modified = True
+            self.triggerRefresh(update_steps=False)
+
+    def setActiveSteps(self, steps: int):
+        if steps <= self.n_steps:
+            self.n_active_steps = steps
+            self._value = ((self._vmax - self._vmin) / self.n_steps) * self.n_active_steps
+            self._is_manually_modified = True
             self.triggerRefresh(update_steps=False)
 
 

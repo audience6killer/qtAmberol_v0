@@ -19,6 +19,7 @@ class SignalBus(QObject, Singleton):
     # Progress bar options
     update_waveform_signal = pyqtSignal(str)
     waveform_is_ready_signal = pyqtSignal()
+    progress_bar_clicked_value_signal = pyqtSignal(int)
 
     # Volume options
     mute_volume_signal = pyqtSignal()
@@ -27,6 +28,10 @@ class SignalBus(QObject, Singleton):
 
     # Main window options
     repaint_main_window_signal = pyqtSignal()
+
+    # Media player signals
+    track_position_changed_signal = pyqtSignal(int)
+
 
 
 signal_bus = SignalBus()

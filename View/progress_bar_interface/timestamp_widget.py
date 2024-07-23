@@ -20,6 +20,11 @@ class TimestampWidget(QWidget):
 
         self.time_current_label = QLabel()
 
+        self._track_duration = None
+
+        self.current_time = None
+        self.time_left = None
+
         self.setup_ui()
 
     def setup_ui(self):
@@ -47,7 +52,40 @@ class TimestampWidget(QWidget):
 
         self.setLayout(self.main_layout)
 
-    def update_timestamps(self, values: list):
+    def updateTimestamps(self, pos: int):
         """Update timestamps"""
-        self.time_current_label.setText(values[0])
-        self.time_left_label.setText(values[1])
+        self.current_time = pos
+        self.time_left = self._track_duration - pos
+        print(f"Current time: {self.current_time}, Left Time: {self.time_left}")
+        self.time_current_label.setText(self.getTrackPositionToMinSec(self.current_time))
+        self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
+
+    def setTrackDuration(self, duration: int):
+        """Set track duration"""
+        self._track_duration = duration
+        self.time_left = duration
+        self.current_time = 0
+
+        self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
+
+    @staticmethod
+    def getTrackPositionToMinSec(pos) -> str:
+        """ Convert from track position in milliseconds to min:sec"""
+        t_seconds = pos // 1000
+        t_minutes = 0
+        seconds = 0
+        if t_seconds:
+            t_minutes = int(t_seconds // 60)
+            seconds = int(t_seconds % 60)
+
+        if t_minutes < 10:
+            minutes_str = f"0{t_minutes}"
+        else:
+            minutes_str = f"{t_minutes}"
+
+        if seconds < 10:
+            seconds_str = f"0{seconds}"
+        else:
+            seconds_str = f"{seconds}"
+
+        return minutes_str + ":" + seconds_str

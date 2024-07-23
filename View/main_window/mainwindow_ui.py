@@ -207,15 +207,20 @@ class MainWindowUI(FramelessMainWindow):
         signal_bus.mute_volume_signal.connect(self.muteVolumeEvent)
         signal_bus.increase_volume_signal.connect(self.increaseVolumeEvent)
         signal_bus.volume_scroll_changed_signal.connect(self.volumeScrollEvent)
+        signal_bus.track_position_changed_signal.connect(self.updateTrackPosition)
+        signal_bus.progress_bar_clicked_value_signal.connect(self.setTrackPosition)
 
         signal_bus.repaint_main_window_signal.connect(self.update)
         #self.player.positionChanged.connect(self.updateTimeStampEvent)
 
-    def updateTimeStampEvent(self, value: int):
-        c_time = value
-        l_time = self.player.duration() - c_time
+    def setTrackDuration(self, value: int):
+        """Set track duration"""
+        duration = self.player.duration()
+        self.progress_bar.updateTimeStamp(duration)
 
-        self.progress_bar.updateTimeStamp(c_time=c_time, l_time=l_time)
+    def setTrackPosition(self, new_pos):
+        """Set new track position"""
+        self.player.setNewPosition(new_pos)
 
     def volumeScrollEvent(self, value: int):
         """Volume scroll event"""
@@ -273,8 +278,11 @@ class MainWindowUI(FramelessMainWindow):
         else:
             song_metadata['AlbumTitle'] = values['AlbumTitle']
 
-        #song_metadata = {k: values[k] for k in ('AlbumArtist', 'Title', 'AlbumTitle')}
         self.song_info.update_song_info(song_metadata)
+
+        duration = self.player.duration()
+        if duration:
+            self.progress_bar.setTrackDuration(duration)
 
         if 'CoverArtImage' in values:
             cover = values['CoverArtImage']
@@ -286,6 +294,11 @@ class MainWindowUI(FramelessMainWindow):
 
             self.volume_control.setSliderColor(color)
             self.repaintWidget(cover)
+
+    def updateTrackPosition(self, pos: int):
+        """Track position has changed"""
+        if pos != 0:
+            self.progress_bar.updatePlaybackTrackPosition(pos)
 
     def repaintWidget(self, cover: QImage):
         """A new track has been loaded, so the widget gradient should be repainted"""

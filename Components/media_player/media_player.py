@@ -11,6 +11,7 @@ class MediaPlayer(QMediaPlayer):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.setNotifyInterval(500)
         self.__connectSignalsToSlots()
 
     def loadTrack(self, file_path: str):
@@ -33,7 +34,7 @@ class MediaPlayer(QMediaPlayer):
         """Connect signals to slots"""
         self.mediaStatusChanged.connect(self.trackMetadataChanged)
         self.positionChanged.connect(self.trackPositionChangedEvent)
-
+        # self.positionChanged.connect(signal_bus.track_position_changed_signal)
         self.error.connect(self.handleErrorSlot)
 
     def trackMetadataChanged(self, status):
@@ -48,6 +49,16 @@ class MediaPlayer(QMediaPlayer):
 
     def handleErrorSlot(self, error):
         print("Error occurred:", error, self.errorString())
+
+    def trackPositionChangedEvent(self, value):
+        """Position in the track changed"""
+        if self.state() == self.State.PlayingState:
+            signal_bus.track_position_changed_signal.emit(value)
+
+    def setNewPosition(self, pos):
+        """Set new track position"""
+        new_pos = (pos / 100) * self.duration()
+        self.setPosition(int(new_pos))
 
     def playerStatusChanged(self, status):
         if status == QMediaPlayer.LoadingMedia:
@@ -79,9 +90,7 @@ class MediaPlayer(QMediaPlayer):
         else:
             print("Other Status")
 
-    def trackPositionChangedEvent(self, value):
-        c_time = value
-        l_time = self.duration() - c_time
+
 
 
 

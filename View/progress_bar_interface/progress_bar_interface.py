@@ -30,6 +30,8 @@ class ProgressBarInterface(QWidget):
         # Get waveform values thread
         self.waveform_thread = WaveformValuesThread()
 
+        self._prev_pos = 0
+
         self.setup_ui()
 
         self.__connectSignalsToSlots()
@@ -50,9 +52,11 @@ class ProgressBarInterface(QWidget):
     def setSliderColor(self, color: QColor):
         self.progress_widget.setSliderColor(color)
 
-    def updateTimeStamp(self, c_time: int, l_time: int):
+    def setTrackDuration(self, duration: int):
         """Update timestamps"""
-        pass
+        self._prev_pos = 0
+        self.timestamp_widget.setTrackDuration(duration)
+        self.progress_widget.setTrackDuration(duration)
 
     def __connectSignalsToSlots(self):
         self.waveform_thread.waveform_finished.connect(self.__onWaveformFinished)
@@ -60,8 +64,18 @@ class ProgressBarInterface(QWidget):
     def __onWaveformFinished(self, values: list):
         """Waveform values have been acquired"""
         self.progress_widget.setWaveformValues(values)
+        self.progress_widget.progress_bar.setActiveSteps(0)
 
     def setWaveformValues(self, path: str):
         """Set waveform values"""
         self.waveform_thread.setTrack(path, self.progress_widget.steps)
         self.waveform_thread.start()
+
+    def updatePlaybackTrackPosition(self, pos):
+        """ Track position during playback"""
+        if pos != 0 and self._prev_pos != pos:
+            self._prev_pos = pos
+            self.timestamp_widget.updateTimestamps(pos)
+            self.progress_widget.updateProgress(pos)
+
+
