@@ -12,5 +12,9 @@
     <file>images/volume_control/volume-up.svg</file>
     <file>images/volume_control/volume.svg</file>
     <file>images/cover_art/album-cover.png</file>
+    <file>images/cover_art/album-cover-small.png</file>
+    <file>images/sidebar/chevron-left.svg</file>
+    <file>images/sidebar/search.svg</file>
+    <file>images/sidebar/select.svg</file>
   </qresource>
 </RCC>

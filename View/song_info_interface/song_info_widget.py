@@ -43,9 +43,9 @@ class SongInfoWidget(QWidget):
             Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignVCenter
         )
 
-        self.track_title.setText("Girl Friend")
-        self.track_album.setText("Midori")
-        self.track_artist.setText("飯島真理")
+        self.track_title.setText("Track Title")
+        self.track_album.setText("Album Name")
+        self.track_artist.setText("Track Artist")
 
         self.info_layout.addWidget(self.track_title)
         self.info_layout.addWidget(self.track_artist)
