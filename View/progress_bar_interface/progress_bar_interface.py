@@ -59,7 +59,12 @@ class ProgressBarInterface(QWidget):
         self.progress_widget.setTrackDuration(duration)
 
     def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
         self.waveform_thread.waveform_finished.connect(self.__onWaveformFinished)
+        signal_bus.open_file_signal.connect(self.setWaveformValues)
+        signal_bus.primary_color_updated_signal.connect(self.setSliderColor)
+        signal_bus.track_position_changed_signal.connect(self.updatePlaybackTrackPosition)
+        signal_bus.update_track_duration_signal.connect(self.setTrackDuration)
 
     def __onWaveformFinished(self, values: list):
         """Waveform values have been acquired"""

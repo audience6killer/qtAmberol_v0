@@ -1,6 +1,8 @@
 from PyQt5.QtCore import QFile
 from PyQt5.QtWidgets import QWidget
 
+from .parse_stylesheet import generate_css
+
 
 def getStyleSheet(file: str):
     """get style sheet
@@ -17,16 +19,7 @@ def getStyleSheet(file: str):
     return qss
 
 
-def setStyleSheet(widget: QWidget, file: str):
-    """set the style sheet of widget
-
-    Parameters
-    ----------
-    widget: QWidget
-        the widget to set style sheet
-
-    file: str
-        qss file name, without `.qss` suffix
-
-    """
-    widget.setStyleSheet(getStyleSheet(file))
+def setStyleSheet(widget: QWidget, primary_color: tuple) -> None:
+    obj_name = widget.objectName()
+    generate_css(obj_name, primary_color)
+    widget.setStyleSheet(getStyleSheet(obj_name))

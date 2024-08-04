@@ -1,6 +1,7 @@
 
 from .metasingleton import Singleton
 from PyQt5.QtCore import pyqtSignal, QObject
+from PyQt5.QtGui import QColor
 from PyQt5.QtMultimedia import QMediaPlayer
 
 
@@ -20,6 +21,9 @@ class SignalBus(QObject, Singleton):
     update_waveform_signal = pyqtSignal(str)
     waveform_is_ready_signal = pyqtSignal()
     progress_bar_clicked_value_signal = pyqtSignal(int)
+    update_track_duration_signal = pyqtSignal(int)
+
+    update_timestamp_signal = pyqtSignal(int)
 
     # Volume options
     mute_volume_signal = pyqtSignal()
@@ -31,6 +35,9 @@ class SignalBus(QObject, Singleton):
 
     # Media player signals
     track_position_changed_signal = pyqtSignal(int)
+
+    # Colors signals
+    primary_color_updated_signal = pyqtSignal(QColor)
 
 
 

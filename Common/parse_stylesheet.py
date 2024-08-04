@@ -1,7 +1,7 @@
 import colorsys
 
 
-def determine_color_degradation(current_color: list):
+def determine_color_degradation(current_color: tuple):
     [red, green, blue] = [n_color / 255 for n_color in current_color]
 
     [h, s, v] = colorsys.rgb_to_hsv(red, green, blue)
@@ -13,12 +13,12 @@ def determine_color_degradation(current_color: list):
     return [bg_color, border_color, hover_color]
 
 
-def generate_css(current_color: list):
-    with open("./resource/qss/main_window.qss", 'r') as f:
+def generate_css(object_name: str, current_color: tuple):
+    with open(f"./resource/qss/{object_name}.qss", 'r') as f:
         stylesheet = f.read()
 
     if len(current_color) > 3:
-        raise IndexError
+        current_color = current_color[:3]
 
     [bg_color, border_color, hover_color] = determine_color_degradation(current_color)
     [alpha_bg, alpha_border, alpha_bg_hover] = [0.3, 0.3, 0.3]
@@ -38,7 +38,7 @@ def generate_css(current_color: list):
     stylesheet = stylesheet.replace('$alpha_border', str(alpha_border))
     stylesheet = stylesheet.replace('$alpha_bg_hover', str(alpha_bg_hover))
 
-    with open("./resource/qss/main_window.css", 'w') as f:
+    with open(f"./resource/qss/{object_name}.css", 'w+') as f:
         f.write(stylesheet)
 
 

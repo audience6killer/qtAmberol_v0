@@ -58,6 +58,19 @@ class PlaybackControlWidget(QWidget):
 
         self.__connectSignalsToSlots()
 
+        #self.setStyleSheet("""
+        #    QPushButton {
+        #      background-color: rgba(148, 89, 118, 0.3);
+        #      border-radius: 25px;
+        #      /*border: 1px solid rgba($red, $blue, $green, 0.8);*/
+        #      /*background-color: rgba($red_bg, $green_bg, $blue_bg, $alpha_bg_normal);*/
+        #      /*background-color: rgb($red_bg, $green_bg, $blue_bg);*/
+        #    }
+        #    QPushButton:hover {
+        #      background-color: rgba(162, 162, 162, 0.3);
+        #    }
+        #""")
+
     def setWidgetsTooltip(self):
         """ Sets tooltip for all buttons"""
         self.play_button.setToolTip("Play")

@@ -5,6 +5,8 @@ Timestamp widget
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QSizePolicy
 
+from Common.signal_bus import signal_bus
+
 
 class TimestampWidget(QWidget):
 
@@ -26,6 +28,8 @@ class TimestampWidget(QWidget):
         self.time_left = None
 
         self.setup_ui()
+
+        self.__connectSignalsToSlots()
 
     def setup_ui(self):
 
@@ -54,11 +58,12 @@ class TimestampWidget(QWidget):
 
     def updateTimestamps(self, pos: int):
         """Update timestamps"""
-        self.current_time = pos
-        self.time_left = self._track_duration - pos
-        print(f"Current time: {self.current_time}, Left Time: {self.time_left}")
-        self.time_current_label.setText(self.getTrackPositionToMinSec(self.current_time))
-        self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
+        if pos is not None and self._track_duration is not None:
+            self.current_time = pos
+            self.time_left = self._track_duration - pos
+            print(f"Current time: {self.current_time}, Left Time: {self.time_left}")
+            self.time_current_label.setText(self.getTrackPositionToMinSec(self.current_time))
+            self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
 
     def setTrackDuration(self, duration: int):
         """Set track duration"""
@@ -67,6 +72,11 @@ class TimestampWidget(QWidget):
         self.current_time = 0
 
         self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
+
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        signal_bus.update_timestamp_signal.connect(self.updateTimestamps)
+
 
     @staticmethod
     def getTrackPositionToMinSec(pos) -> str:

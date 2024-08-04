@@ -1,0 +1,22 @@
+QPushButton {
+  border-radius: 15px;
+  background-color: rgba($red_bg, $green_bg, $blue_bg, $alpha_bg_normal);
+}
+
+QPushButton:hover {
+  /*border: 1px solid rgba($red_hover, $green_hover, $blue_hover, $alpha_border);*/
+  background-color: rgba($red_hover, $green_hover, $blue_hover, $alpha_bg_hover);
+}
+
+QPushButton:focus {
+ border: 1px solid rgb($red_border, $green_border, $blue_border);
+}
+
+QToolTip {
+    background-color: rgba($red_bg, $green_bg, $blue_bg, $alpha_bg_normal);
+    border: 1px solid rgb($red_bg, $green_bg, $blue_bg);
+    padding: 3px;
+    /*border-radius: 10px;*/
+    color: white;
+    /*opacity: 200;*/
+}

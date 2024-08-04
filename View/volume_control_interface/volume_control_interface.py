@@ -8,6 +8,9 @@ from PyQt5.QtGui import QColor
 
 from .volume_control_widget import VolumeControlWidget
 
+from Common.signal_bus import signal_bus
+from Common.style_sheet import setStyleSheet
+
 
 class VolumeControlInterface(QWidget):
 
@@ -23,13 +26,24 @@ class VolumeControlInterface(QWidget):
 
         self.setup_ui()
 
+        self.__connectSignalsToSlots()
+
     def setup_ui(self):
         """Setup ui"""
+
+        self.setObjectName("volume_control_interface")
 
         self.main_layout.addWidget(self.volume_control)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.main_layout)
 
-    def setSliderColor(self, color: QColor):
+    def updateWidgetColor(self, color: QColor):
         self.volume_control.setSliderColor(color)
+        setStyleSheet(self, color.getRgb())
+
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        signal_bus.primary_color_updated_signal.connect(self.updateWidgetColor)
+
+
