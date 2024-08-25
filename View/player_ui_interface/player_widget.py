@@ -1,7 +1,7 @@
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMdiSubWindow, QSizePolicy
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMdiSubWindow, QSizePolicy, QStyleOption, QStyle
+from PyQt5.QtGui import QColor, QPainter
+from PyQt5.QtCore import Qt, QEvent
 
 from View.album_cover_interface import AlbumCoverInterface
 from View.song_info_interface import SongInfoInterface
@@ -9,6 +9,7 @@ from View.progress_bar_interface import ProgressBarInterface
 from View.playback_control_interface import PlaybackControlInterface
 from View.volume_control_interface import VolumeControlInterface
 from View.menu_control_interface import MenuControlInterface
+from View.titlebar import TitleBar
 
 from Common.signal_bus import signal_bus
 
@@ -23,11 +24,16 @@ class PlayerWidget(QWidget):
 
         self.initWidgets()
 
+        self.installEventFilter(self)
+
     def createWidgets(self):
         """Create widgets"""
 
         # PlayerWidget
         self.playerLayout = QVBoxLayout()
+
+        # Titlebar
+        self.titlebar = TitleBar(self)
 
         # Album cover widget
         self.album_cover = AlbumCoverInterface(self)
@@ -54,7 +60,8 @@ class PlayerWidget(QWidget):
         #self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # Layout margins
-        self.playerLayout.setContentsMargins(10, 20, 10, 20)
+        self.playerLayout.setContentsMargins(10, 5, 10, 20)
+        #self.playerLayout.setSpacing(0)
 
         #self.playerLayout.setContentsMargins(0, 0, 0, 0)
         # Set slider colors
@@ -62,6 +69,8 @@ class PlayerWidget(QWidget):
         self.progress_bar.setSliderColor(color)
 
         self.volume_control.updateWidgetColor(color)
+
+        self.playerLayout.addWidget(self.titlebar, 0, Qt.AlignTop)
 
         # The album cover layout is added to the main layout
         self.playerLayout.addWidget(self.album_cover)
@@ -85,6 +94,10 @@ class PlayerWidget(QWidget):
         #self.adjustWidgetGeometry()
 
 
+    def eventFilter(self, obj, event):
+        return super(PlayerWidget, self).eventFilter(obj, event)
+
+
 class MainPlayerView(QMdiSubWindow):
 
     def __init__(self, parent=None):
@@ -92,7 +105,9 @@ class MainPlayerView(QMdiSubWindow):
         #self.setAttribute(Qt.WA_TranslucentBackground)
         self.setStyleSheet("background: transparent;")
         self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setWindowTitle("Player window")
         self.widget = PlayerWidget()
         self.setContentsMargins(0, 0, 0, 0)
         self.setWidget(self.widget)
 
+        self.showMaximized()

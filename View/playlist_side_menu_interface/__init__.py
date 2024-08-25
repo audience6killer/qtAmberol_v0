@@ -1,3 +1,2 @@
 
-from .playlist_menu_interface import PlaylistMenuInterface
-
+from .playlist_menu_view import PlaylistMenuView

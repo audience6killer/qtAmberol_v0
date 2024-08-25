@@ -25,6 +25,7 @@ class AlbumCoverInterface(QWidget):
         self.__connectSignalsToSlots()
 
     def setup_ui(self):
+        self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.addWidget(self.album_cover)
 
         self.setLayout(self.main_layout)

@@ -81,6 +81,7 @@ class MenuControlWidget(QWidget):
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         self.menu_button.clicked.connect(self.openMenuPopup)
+        self.playlist_button.clicked.connect(signal_bus.playlist_view_open_signal)
 
     def openMenuPopup(self):
         """Menu popup"""

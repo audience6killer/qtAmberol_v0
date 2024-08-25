@@ -1,0 +1,25 @@
+QWidget {
+    background: transparent;
+}
+QPushButton {
+    border-radius: 5px;
+}
+QPushButton:hover {
+    background-color: rgba($red_hover, $green_hover, $blue_hover, $alpha_bg_hover);
+}
+QPushButton:pressed {
+  background-color: rgba($red_bg, $green_bg, $blue_bg, $alpha_bg_normal);
+}
+QPushButton:focus {
+    border: none;
+}
+QListWidget::item {
+    /*background-color: transparent;*/
+    border-radius: 15px;
+}
+QListWidget::item:hover {
+    background-color: rgba($red_hover, $green_hover, $blue_hover, $alpha_bg_hover);
+    border-radius: 15px;
+}
+
+/*don't touch active*/

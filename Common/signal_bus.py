@@ -32,12 +32,19 @@ class SignalBus(QObject, Singleton):
 
     # Main window options
     repaint_main_window_signal = pyqtSignal()
+    playlist_view_open_signal = pyqtSignal()
+    close_window_signal = pyqtSignal()
+    minimize_window_signal = pyqtSignal()
 
     # Media player signals
     track_position_changed_signal = pyqtSignal(int)
 
     # Colors signals
     primary_color_updated_signal = pyqtSignal(QColor)
+    gradient_colors_updated_signal = pyqtSignal(list)
+
+    # QMdi signals
+    player_view_focus_in_signal = pyqtSignal()
 
 
 

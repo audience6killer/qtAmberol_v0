@@ -4,135 +4,48 @@ Main window layout
 
 from PyQt5.QtWidgets import QMdiArea
 from PyQt5.QtGui import QPainter, QLinearGradient, QColor, QImage, QBrush
-from PyQt5.QtCore import Qt, QSize, QPointF
+from PyQt5.QtCore import Qt, QSize, QPointF, QPropertyAnimation
 
-from qframelesswindow import FramelessMainWindow, StandardTitleBar
+from qframelesswindow import FramelessMainWindow, StandardTitleBar, FramelessWindow
 
 from Components.media_player.media_player import MediaPlayer
 
-from View.player_ui_interface import MainPlayerView
+from .ui_widget_handler import UIWidgetHandler
 
 from Common.image_utils import ColorPalette
 from Common.style_sheet import setStyleSheet
-from Common.parse_stylesheet import generate_css
 from Common.signal_bus import signal_bus
 
 from Common import resources
 
 
-class UIWidgetHandler(QMdiArea):
-
-    def __init__(self, parent=None):
-        super(UIWidgetHandler, self).__init__()
-        #self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setBackground(QBrush(Qt.transparent))
-        self.player_view = MainPlayerView(parent)
-
-        self.addSubWindow(self.player_view)
-        self.player_view.showMaximized()
-        self.setActiveSubWindow(self.player_view)
-
-
-class CustomTitleBar(StandardTitleBar):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.closeBtn.setHoverBackgroundColor(QColor(216, 212, 213, 50))
-        self.closeBtn.setHoverColor(Qt.black)
-        self.minBtn.setHoverColor(Qt.black)
-        self.minBtn.setHoverBackgroundColor(QColor(216, 212, 213, 50))
-        self.maxBtn.hide()
-
-
 class MainWindowUI(FramelessMainWindow):
     repaint_flag = False
+
     def __init__(self, parent=None):
         # Window configuration
         super().__init__(parent=parent)
 
         self.player = MediaPlayer()
+        self.size()
 
         self.__last_volume = 100
         self.colors = None
         self.primary_color = [125, 125, 125]
 
-        #self.createWidgets()
         self.initWindow()
+
         self.ui_handler = UIWidgetHandler(self)
         self.setCentralWidget(self.ui_handler)
-        #self.adjustWidgetGeometry()
-
-        #self.initWidgets()
-
-    #def createWidgets(self):
-    #    """Create widgets"""
-
-    #    # Player widget
-    #    self.playerWidget = QWidget()
-
-    #    # PlayerWidget
-    #    self.playerLayout = QVBoxLayout()
-
-    #    # Album cover widget
-    #    self.album_cover = AlbumCoverInterface(self)
-
-    #    # Song info widget
-    #    self.song_info = SongInfoInterface(self)
-
-    #    # Progress bar widget
-    #    self.progress_bar = ProgressBarInterface(self)
-
-    #    # Playback control
-    #    self.playback_control = PlaybackControlInterface(self)
-
-    #    # Volume control
-    #    self.volume_control = VolumeControlInterface(self)
-
-    #    # Menu control
-    #    self.menu_control = MenuControlInterface(self)
-
-    #    self.initWindow()
-
-    #def initWidgets(self):
-    #    """Init widgets"""
-
-    #    # Set slider colors
-    #    color = QColor(*self.primary_color)
-    #    self.progress_bar.setSliderColor(color)
-
-    #    self.volume_control.setSliderColor(color)
-
-    #    # The album cover layout is added to the main layout
-    #    self.playerLayout.addWidget(self.album_cover)
-
-    #    # The slider layout is added to the main layout
-    #    self.playerLayout.addWidget(self.progress_bar)
-
-    #    # The song info layout is added to the main
-    #    self.playerLayout.addWidget(self.song_info)
-
-    #    # We add the control layout to the main layout
-    #    self.playerLayout.addWidget(self.playback_control)
-
-    #    # We se the menu and volume control
-    #    self.playerLayout.addWidget(self.volume_control)
-
-    #    self.playerLayout.addWidget(self.menu_control)
-
-    #    self.playerWidget.setLayout(self.playerLayout)
-
-    #    self.adjustWidgetGeometry()
-
-    #    self.setCentralWidget(self.playerWidget)
 
     def initWindow(self):
         """Initialize window"""
-        self.setTitleBar(CustomTitleBar(self))
-        self.titleBar.raise_()
+        self.titleBar.maxBtn.hide()
+        self.titleBar.minBtn.hide()
+        self.titleBar.closeBtn.hide()
+        self.setWindowTitle("qtAmberol")
 
-        self.titleBar.layout().insertStretch(1, 1)
-        self.setMenuWidget(self.titleBar)
-
-        self.setFixedSize(QSize(530, 700))
+        self.setFixedSize(QSize(600, 700))
 
         # set window stylesheet
         self.setObjectName("main_window")
@@ -146,16 +59,13 @@ class MainWindowUI(FramelessMainWindow):
         """ Generate qss and apply """
         setStyleSheet(self, tuple(self.primary_color))
 
-    #def adjustWidgetGeometry(self):
-    #    # Main layout configuration
-    #    self.playerLayout.setContentsMargins(10, 20, 10, 20)
-
     def updateUIColors(self, cover: QImage):
         colors = ColorPalette(cover)
         self.colors = colors.get_min_contrast_palette()
         #self.colors = colors.get_primary_min_contrast_palette()
         self.primary_color = colors.get_dominant_color()
 
+        signal_bus.gradient_colors_updated_signal.emit(self.colors)
         signal_bus.primary_color_updated_signal.emit(QColor(*self.primary_color))
 
     def paintEvent(self, event):
@@ -222,6 +132,9 @@ class MainWindowUI(FramelessMainWindow):
         signal_bus.repaint_main_window_signal.connect(self.update)
         #self.player.positionChanged.connect(self.updateTimeStampEvent)
 
+        signal_bus.close_window_signal.connect(self.close)
+
+
     def setTrackPosition(self, new_pos):
         """Set new track position"""
         self.player.setNewPosition(new_pos)
@@ -256,10 +169,6 @@ class MainWindowUI(FramelessMainWindow):
         """File opened"""
         self.player.loadTrack(file_name)
 
-    #def updateWaveformEvent(self, file: str):
-    #    """Update waveform values"""
-    #    self.progress_bar.setWaveformValues(file)
-
     def trackMetadataChanged(self, values: dict):
         """Track Metadata Changed"""
         duration = self.player.duration()
@@ -270,11 +179,6 @@ class MainWindowUI(FramelessMainWindow):
             cover = values['CoverArtImage']
             self.updateUIColors(cover)
             self.repaintWidget()
-
-    #def updateTrackPosition(self, pos: int):
-    #    """Track position has changed"""
-    #    if pos != 0:
-    #        self.progress_bar.updatePlaybackTrackPosition(pos)
 
     def repaintWidget(self):
         """A new track has been loaded, so the widget gradient should be repainted"""

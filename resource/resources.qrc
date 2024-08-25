@@ -16,5 +16,14 @@
     <file>images/sidebar/chevron-left.svg</file>
     <file>images/sidebar/search.svg</file>
     <file>images/sidebar/select.svg</file>
+    <file>images/sidebar/playing.svg</file>
+    <file>images/titlebar/close.svg</file>
+    <file>images/titlebar/minimize.svg</file>
+    <file>qss/main_window.qss</file>
+    <file>qss/menu_control_interface.qss</file>
+    <file>qss/playback_control_interface.qss</file>
+    <file>qss/titlebar_widget.qss</file>
+    <file>qss/volume_control_interface.qss</file>
+    <file>qss/playlist_widget.qss</file>
   </qresource>
 </RCC>

@@ -4,7 +4,6 @@ from inspect import getsourcefile
 from pathlib import Path
 
 from PyQt5.QtWidgets import QApplication
-from Common.style_sheet import getStyleSheet
 
 from PyQt5.QtCore import Qt
 

@@ -1,43 +1,55 @@
+from signal import signal
 
-from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from PyQt5.QtGui import QPainter, QColor, QLinearGradient
-from PyQt5.QtCore import QPointF
+from PyQt5.QtWidgets import QMdiSubWindow
+from PyQt5.QtCore import Qt, QPointF, QSize, QEvent
 
-from .playlist_widget import PlaylistWidget
+from Common.signal_bus import signal_bus
 
-class PlaylistMenuInterface(QWidget):
+from .playlist_side_menu_interface import PlaylistSideMenuInterface
 
-    repaint_flag = False
+
+class PlaylistMenuView(QMdiSubWindow):
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super(PlaylistMenuView, self).__init__(parent)
+
+        self.window_size = parent.size()    # QSize
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
         self.colors = None
+        self.widget = PlaylistSideMenuInterface(self)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setWindowTitle("Playlist window")
+        self.setWidget(self.widget)
+        self.__connectSignalsToSlots()
 
-        self.main_layout = QVBoxLayout()
+        self.hide()
 
-        self.playlist_widget = PlaylistWidget()
+    def __connectSignalsToSlots(self):
+        """Connect signals to slots"""
+        signal_bus.gradient_colors_updated_signal.connect(self.setGradientColors)
 
-        self.setupUI()
-
-    def setupUI(self):
-        """Setup ui"""
-        self.main_layout.addWidget(self.playlist_widget)
-
-        self.setLayout(self.main_layout)
-
-    def setGradientColors(self, colors: list[list]):
+    def setGradientColors(self, colors: list):
+        """Gradient colors was updated"""
         self.colors = colors
+        self.update()
 
     def paintEvent(self, event):
         """Paint event"""
-        if self.repaint_flag:
+        if self.colors is not None:
             self.gradientPaint(event)
         else:
-            super(PlaylistMenuInterface, self).paintEvent(event)
+            super(PlaylistMenuView, self).paintEvent(event)
 
     def gradientPaint(self, event):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
+
+        # Set the background brush to transparent
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(Qt.NoPen)
+        painter.drawRect(self.rect())
 
         # Define the background colors
         background_colors = [
@@ -76,6 +88,5 @@ class PlaylistMenuInterface(QWidget):
 
             painter.setBrush(gradient)
             painter.drawRect(self.rect())
-
 
 
