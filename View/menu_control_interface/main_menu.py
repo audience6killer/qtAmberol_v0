@@ -1,3 +1,4 @@
+import os
 
 from PyQt5.QtWidgets import QMenu, QAction, QFileDialog, QStyle, QStyleOptionMenuItem
 from PyQt5.QtGui import QPainter, QPen, QBrush, QColor, QRegion, QKeySequence
@@ -93,6 +94,7 @@ class MainMenu(QMenu):
         """Connect signals to slots"""
         #self.add_folder_option.triggered.connect()
         self.add_song_option.triggered.connect(self.handleOpenFile)
+        self.add_folder_option.triggered.connect(self.handleOpenFolder)
 
     def handleOpenFile(self):
         options = QFileDialog.Options()
@@ -104,10 +106,35 @@ class MainMenu(QMenu):
             print("Selected file:", file_name)
             signal_bus.open_file_signal.emit(file_name)
 
+    def handleOpenFolder(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        directory = QFileDialog.getExistingDirectory(self, "Select a folder", options=options)
+
+        music_extensions = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a'}
+
+        # Get all music file paths of the direct children in the selected directory
+        music_files = [
+            os.path.join(directory, f)
+            for f in os.listdir(directory)
+            if os.path.isfile(os.path.join(directory, f)) and os.path.splitext(f)[1].lower() in music_extensions
+        ]
+
+        if music_files:
+            signal_bus.open_folder_signal.emit(music_files)
+
+            # Print the music file paths
+            for file_path in music_files:
+                print(file_path)
+
+
+
+
+
     def openMenu(self, pos):
         """Open main menu popup"""
         self.exec_(pos)
-        signal_bus.repaint_main_window_signal.emit()
+        #signal_bus.repaint_main_window_signal.emit()
 
 
 

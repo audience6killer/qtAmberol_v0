@@ -5,6 +5,7 @@ Song info interface
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
 from PyQt5.QtCore import pyqtSignal
 
+from Components.media_player.song_info import SongInfo
 from .song_info_widget import SongInfoWidget
 
 from Common.signal_bus import signal_bus
@@ -27,33 +28,9 @@ class SongInfoInterface(QWidget):
 
         self.__connectSignalsToSlots()
 
-    def update_song_info(self, info: dict):
+    def update_song_info(self, info: SongInfo):
         self.info_widget.update_info(info)
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        signal_bus.metadata_song_signal.connect(self.trackMetadataChanged)
-
-    def trackMetadataChanged(self, values: dict):
-        """Track metadata changed"""
-        song_metadata = {}
-        if 'AlbumArtist' in values:
-            song_metadata['Artist'] = values['AlbumArtist']
-        elif 'Artist' in values:
-            song_metadata['Artist'] = values['Artist']
-        elif 'ContributingArtist' in values:
-            song_metadata['Artist'] = values['ContributingArtist']
-        else:
-            song_metadata['Artist'] = 'Unknown Artist'
-
-        if 'Title' not in values:
-            song_metadata['Title'] = 'Unknown Title'
-        else:
-            song_metadata['Title'] = values['Title']
-
-        if 'AlbumTitle' not in values:
-            song_metadata['AlbumTitle'] = 'Unknown Album'
-        else:
-            song_metadata['AlbumTitle'] = values['AlbumTitle']
-
-        self.update_song_info(song_metadata)
+        signal_bus.playlist_track_changed_signal.connect(self.update_song_info)

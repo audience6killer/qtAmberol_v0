@@ -5,6 +5,7 @@ Album cover interface
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
 from PyQt5.QtCore import pyqtSignal
 
+from Components.media_player.song_info import SongInfo
 from .album_cover_widget import AlbumCoverWidget
 
 from Common.signal_bus import signal_bus
@@ -30,12 +31,10 @@ class AlbumCoverInterface(QWidget):
 
         self.setLayout(self.main_layout)
 
-    def updateCoverImage(self, metadata: dict):
+    def updateCoverImage(self, metadata: SongInfo):
         """Update cover image"""
-        if 'CoverArtImage' in metadata:
-            cover = metadata['CoverArtImage']
-            self.album_cover.updateCoverArt(cover)
+        self.album_cover.updateCoverArt(metadata.album_cover)
 
     def __connectSignalsToSlots(self):
         """connect signals to slots"""
-        signal_bus.metadata_song_signal.connect(self.updateCoverImage)
+        signal_bus.playlist_track_changed_signal.connect(self.updateCoverImage)

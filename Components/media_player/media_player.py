@@ -12,13 +12,13 @@ class MediaPlayer(QMediaPlayer):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.setNotifyInterval(500)
+        self._current_playlist_track = 0
         self.__connectSignalsToSlots()
 
-    def loadTrack(self, file_path: str):
-        """Load new track to player"""
-        #print("Setting new track")
-        self.setMedia(QMediaContent(QUrl.fromLocalFile(file_path)))
-        pass
+    #def loadTrack(self, file_path: str):
+    #    """Load new track to player"""
+    #    #print("Setting new track")
+    #    self.setMedia(QMediaContent(QUrl.fromLocalFile(file_path)))
 
     def togglePlayState(self):
         """Toggle Play State"""
@@ -32,7 +32,7 @@ class MediaPlayer(QMediaPlayer):
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        self.mediaStatusChanged.connect(self.trackMetadataChanged)
+        #self.mediaStatusChanged.connect(self.trackMetadataChanged)
         self.positionChanged.connect(self.trackPositionChangedEvent)
         # self.positionChanged.connect(signal_bus.track_position_changed_signal)
         self.error.connect(self.handleErrorSlot)

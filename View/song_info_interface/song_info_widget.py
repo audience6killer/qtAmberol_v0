@@ -3,6 +3,8 @@
 from PyQt5.QtWidgets import QLabel, QSizePolicy, QWidget, QVBoxLayout
 from PyQt5.QtCore import Qt
 
+from Components.media_player.song_info import SongInfo
+
 
 class SongInfoWidget(QWidget):
     def __init__(self, parent=None):
@@ -54,8 +56,8 @@ class SongInfoWidget(QWidget):
         # The layout is set in parent
         self.setLayout(self.info_layout)
 
-    def update_info(self, info: dict):
+    def update_info(self, info: SongInfo):
         """Update song info"""
-        self.track_title.setText(info['Title'])
-        self.track_artist.setText(info['Artist'])
-        self.track_album.setText(info['AlbumTitle'])
+        self.track_title.setText(info.title)
+        self.track_artist.setText(info.artist)
+        self.track_album.setText(info.album)

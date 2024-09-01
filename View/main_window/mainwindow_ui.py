@@ -9,6 +9,8 @@ from PyQt5.QtCore import Qt, QSize, QPointF, QPropertyAnimation
 from qframelesswindow import FramelessMainWindow, StandardTitleBar, FramelessWindow
 
 from Components.media_player.media_player import MediaPlayer
+from Components.media_player.media_playlist import MediaPlaylist
+from Components.media_player.song_info import SongInfo
 
 from .ui_widget_handler import UIWidgetHandler
 
@@ -27,6 +29,8 @@ class MainWindowUI(FramelessMainWindow):
         super().__init__(parent=parent)
 
         self.player = MediaPlayer()
+        self.playlist = MediaPlaylist()
+        self.player.setPlaylist(self.playlist)
         self.size()
 
         self.__last_volume = 100
@@ -120,20 +124,13 @@ class MainWindowUI(FramelessMainWindow):
     def connectSignalsToSlots(self):
         """Connect signals to slots"""
         signal_bus.toggle_play_state_signal.connect(self.togglePlayState)
-        signal_bus.open_file_signal.connect(self.fileOpened)
-        #signal_bus.open_file_signal.connect(self.updateWaveformEvent)
-        signal_bus.metadata_song_signal.connect(self.trackMetadataChanged)
+        signal_bus.playlist_track_changed_signal.connect(self.currentTrackChanged)
         signal_bus.mute_volume_signal.connect(self.muteVolumeEvent)
         signal_bus.increase_volume_signal.connect(self.increaseVolumeEvent)
         signal_bus.volume_scroll_changed_signal.connect(self.volumeScrollEvent)
-        #signal_bus.track_position_changed_signal.connect(self.updateTrackPosition)
         signal_bus.progress_bar_clicked_value_signal.connect(self.setTrackPosition)
 
-        signal_bus.repaint_main_window_signal.connect(self.update)
-        #self.player.positionChanged.connect(self.updateTimeStampEvent)
-
         signal_bus.close_window_signal.connect(self.close)
-
 
     def setTrackPosition(self, new_pos):
         """Set new track position"""
@@ -165,23 +162,20 @@ class MainWindowUI(FramelessMainWindow):
         print("Toggle Play State")
         self.player.togglePlayState()
 
-    def fileOpened(self, file_name: str):
-        """File opened"""
-        self.player.loadTrack(file_name)
-
-    def trackMetadataChanged(self, values: dict):
+    def currentTrackChanged(self, metadata: SongInfo):
         """Track Metadata Changed"""
-        duration = self.player.duration()
+        duration = metadata.duration
         if duration:
             signal_bus.update_track_duration_signal.emit(duration)
 
-        if 'CoverArtImage' in values:
-            cover = values['CoverArtImage']
-            self.updateUIColors(cover)
-            self.repaintWidget()
+        cover = metadata.album_cover
+        self.updateUIColors(cover)
+        self.repaintWidget()
 
     def repaintWidget(self):
         """A new track has been loaded, so the widget gradient should be repainted"""
         self.setQss()
         self.repaint_flag = True
         self.update()
+
+

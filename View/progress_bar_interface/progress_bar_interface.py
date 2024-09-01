@@ -6,6 +6,7 @@ from PyQt5.QtCore import QSize, pyqtSignal, Qt
 from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QWidget
 from PyQt5.QtGui import QColor
 
+from Components.media_player.song_info import SongInfo
 from .progress_bar_widget import ProgressBarWidget
 from .timestamp_widget import TimestampWidget
 
@@ -52,28 +53,29 @@ class ProgressBarInterface(QWidget):
     def setSliderColor(self, color: QColor):
         self.progress_widget.setSliderColor(color)
 
-    def setTrackDuration(self, duration: int):
+    def setTrackDuration(self, metadata: SongInfo):
         """Update timestamps"""
         self._prev_pos = 0
+        duration = metadata.duration
         self.timestamp_widget.setTrackDuration(duration)
         self.progress_widget.setTrackDuration(duration)
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         self.waveform_thread.waveform_finished.connect(self.__onWaveformFinished)
-        signal_bus.open_file_signal.connect(self.setWaveformValues)
+        signal_bus.playlist_track_changed_signal.connect(self.setWaveformValues)
         signal_bus.primary_color_updated_signal.connect(self.setSliderColor)
         signal_bus.track_position_changed_signal.connect(self.updatePlaybackTrackPosition)
-        signal_bus.update_track_duration_signal.connect(self.setTrackDuration)
+        signal_bus.playlist_track_changed_signal.connect(self.setTrackDuration)
 
     def __onWaveformFinished(self, values: list):
         """Waveform values have been acquired"""
         self.progress_widget.setWaveformValues(values)
         self.progress_widget.progress_bar.setActiveSteps(0)
 
-    def setWaveformValues(self, path: str):
+    def setWaveformValues(self, track_info: SongInfo):
         """Set waveform values"""
-        self.waveform_thread.setTrack(path, self.progress_widget.steps)
+        self.waveform_thread.setTrack(track_info.file, self.progress_widget.steps)
         self.waveform_thread.start()
 
     def updatePlaybackTrackPosition(self, pos):

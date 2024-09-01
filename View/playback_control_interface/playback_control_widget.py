@@ -80,6 +80,8 @@ class PlaybackControlWidget(QWidget):
     def __connectSignalsToSlots(self):
         """Connect widgets signals to slots"""
         self.play_button.clicked.connect(self.playButtonControl)
+        self.next_button.clicked.connect(signal_bus.next_song_signal)
+        self.previous_button.clicked.connect(signal_bus.previous_song_signal)
 
     def playButtonControl(self):
         """Play button control"""

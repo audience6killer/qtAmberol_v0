@@ -59,8 +59,8 @@ class TimestampWidget(QWidget):
     def updateTimestamps(self, pos: int):
         """Update timestamps"""
         if pos is not None and self._track_duration is not None:
-            self.current_time = pos
-            self.time_left = self._track_duration - pos
+            self.current_time = pos // 1000
+            self.time_left = self._track_duration - self.current_time
             print(f"Current time: {self.current_time}, Left Time: {self.time_left}")
             self.time_current_label.setText(self.getTrackPositionToMinSec(self.current_time))
             self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))
@@ -77,11 +77,10 @@ class TimestampWidget(QWidget):
         """Connect signals to slots"""
         signal_bus.update_timestamp_signal.connect(self.updateTimestamps)
 
-
     @staticmethod
     def getTrackPositionToMinSec(pos) -> str:
-        """ Convert from track position in milliseconds to min:sec"""
-        t_seconds = pos // 1000
+        """ Convert from track position in seconds to min:sec"""
+        t_seconds = pos
         t_minutes = 0
         seconds = 0
         if t_seconds:

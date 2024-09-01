@@ -1,4 +1,4 @@
-
+from Components.media_player.song_info import SongInfo
 from .metasingleton import Singleton
 from PyQt5.QtCore import pyqtSignal, QObject
 from PyQt5.QtGui import QColor
@@ -9,10 +9,12 @@ class SignalBus(QObject, Singleton):
     """Signalbus"""
     # Menu Options
     open_file_signal = pyqtSignal(str)
-    open_folder_signal = pyqtSignal()
+    open_folder_signal = pyqtSignal(list)
 
     # Playback options
     toggle_play_state_signal = pyqtSignal()
+    next_song_signal = pyqtSignal()
+    previous_song_signal = pyqtSignal()
 
     # Metadata options
     metadata_song_signal = pyqtSignal(dict)
@@ -44,7 +46,14 @@ class SignalBus(QObject, Singleton):
     gradient_colors_updated_signal = pyqtSignal(list)
 
     # QMdi signals
-    player_view_focus_in_signal = pyqtSignal()
+    hide_playlist_view = pyqtSignal()
+
+    # Playlist Signals
+    track_added_to_playlist_signal = pyqtSignal(SongInfo)
+    playlist_changed_signal = pyqtSignal(list)
+    playlist_track_changed_signal = pyqtSignal(SongInfo)
+    playlist_current_track_index_signal = pyqtSignal(int)
+    playlist_track_clicked_index_signal = pyqtSignal(int)
 
 
 

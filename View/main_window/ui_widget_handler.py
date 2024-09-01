@@ -35,6 +35,7 @@ class UIWidgetHandler(QMdiArea):
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         signal_bus.playlist_view_open_signal.connect(self.showPlaylistView)
+        signal_bus.hide_playlist_view.connect(self.hidePlaylistView)
         self.subWindowActivated.connect(self.__windowActivated)
 
     def showPlaylistView(self):

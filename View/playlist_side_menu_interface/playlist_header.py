@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButt
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import QSize, Qt
 
-from Common import resources
+from Common import resources, signal_bus
 
 
 class PlaylistHeader(QWidget):
@@ -24,6 +24,8 @@ class PlaylistHeader(QWidget):
         self.setupUI()
 
         self.setQss()
+
+        self.__connectSignalsToSlots()
 
     def setupUI(self):
         """ Setup UI"""
@@ -74,3 +76,6 @@ class PlaylistHeader(QWidget):
                 font-size: 12px;
             }
         """)
+
+    def __connectSignalsToSlots(self):
+        self.hide_sidebar.clicked.connect(signal_bus.hide_playlist_view)

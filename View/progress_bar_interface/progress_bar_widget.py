@@ -58,7 +58,7 @@ class ProgressBarWidget(QWidget):
 
     def setTrackDuration(self, duration: int):
         """Set track duration"""
-        self._track_duration = duration
+        self._track_duration = duration * 1000
         self._duration_to_step_ratio = self.steps / self._track_duration
 
     def setSliderColor(self, color: QColor):

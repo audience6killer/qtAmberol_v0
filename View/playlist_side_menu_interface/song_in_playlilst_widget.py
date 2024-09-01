@@ -1,14 +1,15 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
 
 from Common.image_utils import get_rounded_pixmap
 from Common import resources
+from Components.media_player.song_info import SongInfo
 
 
 class SongInPlaylistWidget(QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self, metadata: SongInfo, parent=None):
         super(SongInPlaylistWidget, self).__init__(parent)
 
         self._is_playing = False
@@ -25,7 +26,7 @@ class SongInPlaylistWidget(QWidget):
 
         self.setQss()
 
-        #self.setTrackData({})
+        self.setTrackData(metadata)
 
     def setupUI(self):
         """Setup UI"""
@@ -74,34 +75,21 @@ class SongInPlaylistWidget(QWidget):
             }
         """)
 
-    def setTrackData(self, data: dict):
+    def setTrackData(self, data: SongInfo):
         """Set track data"""
-        if 'Artist' in data:
-            self.artist_label.setText(data['Artist'])
-        else:
-            self.artist_label.setText("Unknown Artist")
+        self.artist_label.setText(data.artist)
+        self.track_title_label.setText(data.title)
 
-        if 'Title' in data:
-            self.track_title_label.setText(data['Title'])
-        else:
-            self.track_title_label.setText("Unknown Title")
-
-        if 'CoverArtImage' in data:
-            modified_pixmap = get_rounded_pixmap(
-                data['CoverArtImage'].scaled(
-                    50,
-                    50,
-                    aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio,
-                    transformMode=Qt.TransformationMode.SmoothTransformation,
-                ),
-                radius=5
-            )
-            self.album_cover_label.setPixmap(modified_pixmap)
-
-        else:
-            default_pixmap = QPixmap(":/images/cover_art/album-cover-small.png")
-            modified_pixmap = get_rounded_pixmap(default_pixmap, radius=5)
-            self.album_cover_label.setPixmap(modified_pixmap)
+        modified_pixmap = get_rounded_pixmap(
+            data.album_cover.scaled(
+                50,
+                50,
+                aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio,
+                transformMode=Qt.TransformationMode.SmoothTransformation,
+            ),
+            radius=5
+        )
+        self.album_cover_label.setPixmap(modified_pixmap)
 
     def isPlaying(self):
         self._is_playing = True
