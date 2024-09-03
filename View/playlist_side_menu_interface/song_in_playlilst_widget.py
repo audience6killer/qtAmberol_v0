@@ -1,10 +1,12 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QHBoxLayout, QSpacerItem, QSizePolicy, QScrollArea
+
+from Components.media_player.song_info import SongInfo
+from Components.marquee_label import MarqueeLabel
 
 from Common.image_utils import get_rounded_pixmap
-from Common import resources
-from Components.media_player.song_info import SongInfo
+from Common import resources, signal_bus
 
 
 class SongInPlaylistWidget(QWidget):
@@ -13,10 +15,11 @@ class SongInPlaylistWidget(QWidget):
         super(SongInPlaylistWidget, self).__init__(parent)
 
         self._is_playing = False
+        self._is_scrolling = False
 
         self.album_cover_label = QLabel()
-        self.track_title_label = QLabel()
-        self.artist_label = QLabel()
+        self.track_title_label = MarqueeLabel()
+        self.artist_label = MarqueeLabel()
 
         self.playing_symbol = QLabel()
 
@@ -27,6 +30,32 @@ class SongInPlaylistWidget(QWidget):
         self.setQss()
 
         self.setTrackData(metadata)
+
+    @property
+    def isPlaying(self):
+        return self._is_playing
+
+    @isPlaying.setter
+    def isPlaying(self, value: bool):
+        self._is_playing = value
+        if self._is_playing:
+            self.playing_symbol.show()
+            self.startScrolling()
+        else:
+            self.playing_symbol.hide()
+            self.stopScrolling()
+
+    @property
+    def isScrolling(self):
+        return self._is_scrolling
+
+    @isScrolling.setter
+    def isScrolling(self, value: bool):
+        self._is_scrolling = value
+        if self.isScrolling and self.isPlaying:
+            self.startScrolling()
+        elif not self._is_scrolling:
+            self.stopScrolling()
 
     def setupUI(self):
         """Setup UI"""
@@ -59,7 +88,7 @@ class SongInPlaylistWidget(QWidget):
         self.main_layout.addSpacerItem(playing_spacer)
         self.main_layout.addWidget(self.playing_symbol)
         self.main_layout.setContentsMargins(8, 3, 8, 3)
-        #self.main_layout.setSpacing(1)
+        # self.main_layout.setSpacing(1)
 
         self.playing_symbol.hide()
         self.setLayout(self.main_layout)
@@ -91,10 +120,11 @@ class SongInPlaylistWidget(QWidget):
         )
         self.album_cover_label.setPixmap(modified_pixmap)
 
-    def isPlaying(self):
-        self._is_playing = True
-        self.playing_symbol.show()
+    def startScrolling(self):
+        self.track_title_label.is_scrolling = True
+        self.artist_label.is_scrolling = True
 
-    def isNotPlaying(self):
-        if self._is_playing:
-            self.playing_symbol.hide()
+    def stopScrolling(self):
+        self.track_title_label.is_scrolling = False
+        self.artist_label.is_scrolling = False
+

@@ -47,6 +47,7 @@ class SignalBus(QObject, Singleton):
 
     # QMdi signals
     hide_playlist_view = pyqtSignal()
+    playlist_view_is_visible = pyqtSignal(bool)
 
     # Playlist Signals
     track_added_to_playlist_signal = pyqtSignal(SongInfo)

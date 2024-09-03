@@ -4,6 +4,7 @@ Timestamp widget
 
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget, QSizePolicy
+from numpy.ma.core import floor
 
 from Common.signal_bus import signal_bus
 
@@ -60,7 +61,7 @@ class TimestampWidget(QWidget):
         """Update timestamps"""
         if pos is not None and self._track_duration is not None:
             self.current_time = pos // 1000
-            self.time_left = self._track_duration - self.current_time
+            self.time_left = int(self._track_duration - self.current_time)
             print(f"Current time: {self.current_time}, Left Time: {self.time_left}")
             self.time_current_label.setText(self.getTrackPositionToMinSec(self.current_time))
             self.time_left_label.setText("-" + self.getTrackPositionToMinSec(self.time_left))

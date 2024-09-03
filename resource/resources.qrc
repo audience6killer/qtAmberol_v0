@@ -25,5 +25,6 @@
     <file>qss/titlebar_widget.qss</file>
     <file>qss/volume_control_interface.qss</file>
     <file>qss/playlist_widget.qss</file>
+    <file>qss/tracklist_widget.qss</file>
   </qresource>
 </RCC>

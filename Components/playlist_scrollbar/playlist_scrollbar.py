@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, QPropertyAnimation, QTimer
+from PyQt5.QtCore import Qt, QPropertyAnimation, QTimer, QEasingCurve
 from PyQt5.QtWidgets import QScrollBar
 
 
@@ -12,7 +12,7 @@ class PlaylistScrollBar(QScrollBar):
 
         # Create a property animation for fading in/out
         self.animation = QPropertyAnimation(self, b"maximumWidth")
-        self.animation.setDuration(100)  # Duration of the animation in milliseconds
+        self.animation.setDuration(500)  # Duration of the animation in milliseconds
 
         # Timer to delay the hiding of the scrollbar
         self.hide_timer = QTimer()
@@ -27,12 +27,15 @@ class PlaylistScrollBar(QScrollBar):
         self.animation.stop()  # Stop any ongoing animation
         self.animation.setStartValue(self.width())  # Set the current width as the start value
         self.animation.setEndValue(12)  # Set the end value to the full width
+        self.animation.setEasingCurve(QEasingCurve.OutQuad)
         self.animation.start()  # Start the animation
 
     def hide_scrollbar(self):
         self.animation.stop()  # Stop any ongoing animation
+        self.animation.setDuration(300)
         self.animation.setStartValue(self.width())  # Set the current width as the start value
         self.animation.setEndValue(0)  # Set the end value to a very small width
+        self.animation.setEasingCurve(QEasingCurve.InOutQuad)
         self.animation.start()  # Start the animation
 
     def enterEvent(self, event):

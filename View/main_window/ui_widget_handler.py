@@ -35,7 +35,7 @@ class UIWidgetHandler(QMdiArea):
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         signal_bus.playlist_view_open_signal.connect(self.showPlaylistView)
-        signal_bus.hide_playlist_view.connect(self.hidePlaylistView)
+        #signal_bus.hide_playlist_view.connect(self.hidePlaylistView)
         self.subWindowActivated.connect(self.__windowActivated)
 
     def showPlaylistView(self):
@@ -77,4 +77,7 @@ class UIWidgetHandler(QMdiArea):
     def __windowActivated(self, sub_window):
         if sub_window == self.player_view:
             self.hidePlaylistView()
+            signal_bus.playlist_view_is_visible.emit(False)
+        elif sub_window == self.playlist_view:
+            signal_bus.playlist_view_is_visible.emit(True)
         #print(f"Activated SubWindow: {sub_window.windowTitle()}")
