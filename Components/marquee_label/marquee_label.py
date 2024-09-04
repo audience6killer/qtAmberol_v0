@@ -14,6 +14,7 @@ class MarqueeLabel(QLabel):
         self.setText(text)
         self.current_pos = 0
         self.scroll_timer = QTimer(self)
+        self.scroll_timer.timeout.connect(self.scrollText)
 
     @property
     def is_scrolling(self):
@@ -22,7 +23,7 @@ class MarqueeLabel(QLabel):
     @is_scrolling.setter
     def is_scrolling(self, value):
         self._is_scrolling = value
-        if self._is_scrolling and self.fontMetrics().boundingRect(self._original_text).width() > self._pixel_limit:
+        if self._is_scrolling and self.fontMetrics().boundingRect(self._original_text).width() >= self._pixel_limit:
             self.scroll_timer.start(50)  # Adjust the speed by changing the interval (ms)
         else:
             # return to its original place
@@ -31,7 +32,7 @@ class MarqueeLabel(QLabel):
             self.scroll_timer.stop()
             self.update()
 
-    def scroll_text(self):
+    def scrollText(self):
         self.current_pos -= 1  # Adjust the speed by changing this value
         print(self.current_pos)
         super().setText(f"{self._original_text}\t")
@@ -58,8 +59,9 @@ class MarqueeLabel(QLabel):
         painter.setPen(self.palette().windowText().color())
         text_width = self.fontMetrics().width(self.text())
         text_height = self.fontMetrics().height()
+        #text_height = self.fontMetrics().boundingRect(self.text).height()
 
-        painter.drawText(self.current_pos, (self.height() + text_height) // 2, self.text())
+        painter.drawText(self.current_pos, (self.height() + text_height) // 2 - 2, self.text())
         # If the text is outside the widget, redraw it from the other side
         if self.current_pos < 0:
             painter.drawText(self.current_pos + text_width, (self.height() + text_height) // 2, self.text())

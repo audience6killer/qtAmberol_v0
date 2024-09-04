@@ -15,6 +15,7 @@ class SignalBus(QObject, Singleton):
     toggle_play_state_signal = pyqtSignal()
     next_song_signal = pyqtSignal()
     previous_song_signal = pyqtSignal()
+    set_play_state_signal = pyqtSignal()
 
     # Metadata options
     metadata_song_signal = pyqtSignal(dict)
@@ -40,6 +41,7 @@ class SignalBus(QObject, Singleton):
 
     # Media player signals
     track_position_changed_signal = pyqtSignal(int)
+    media_player_toggle_play_state_signal = pyqtSignal()
 
     # Colors signals
     primary_color_updated_signal = pyqtSignal(QColor)
@@ -55,6 +57,7 @@ class SignalBus(QObject, Singleton):
     playlist_track_changed_signal = pyqtSignal(SongInfo)
     playlist_current_track_index_signal = pyqtSignal(int)
     playlist_track_clicked_index_signal = pyqtSignal(int)
+    playlist_remaining_time = pyqtSignal(float)
 
 
 

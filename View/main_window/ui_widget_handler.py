@@ -57,6 +57,8 @@ class UIWidgetHandler(QMdiArea):
         # Ensure the playlist_view stays on top
         self.playlist_view.raise_()
 
+        signal_bus.playlist_view_is_visible.emit(True)
+
     def hidePlaylistView(self):
         self.animation = QPropertyAnimation(self.playlist_view, b"size")
         self.animation.setDuration(200)
@@ -78,6 +80,5 @@ class UIWidgetHandler(QMdiArea):
         if sub_window == self.player_view:
             self.hidePlaylistView()
             signal_bus.playlist_view_is_visible.emit(False)
-        elif sub_window == self.playlist_view:
-            signal_bus.playlist_view_is_visible.emit(True)
+
         #print(f"Activated SubWindow: {sub_window.windowTitle()}")

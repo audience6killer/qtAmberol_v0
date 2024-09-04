@@ -17,6 +17,8 @@ class MediaPlaylist(QMediaPlaylist):
         super(MediaPlaylist, self).__init__(parent)
 
         self.tracklist: list[SongInfo] = []
+        self._total_playlist_duration = 0.0     # in seconds
+        self._remaining_playlist_time = 0.0
         self.setPlaybackMode(QMediaPlaylist.Sequential)
 
         self.__connectSignalsToSlots()
@@ -40,15 +42,20 @@ class MediaPlaylist(QMediaPlaylist):
             title=track_metadata.title or 'Unknown Title',
             artist=track_metadata.artist or track_metadata.albumartist or 'Unknown Artist',
             album=track_metadata.album or 'UnknownAlbum',
-            album_cover=QImage.fromData(track_metadata.get_image()) or QImage(":/images/cover_art/album-cover.png"),
+            album_cover=QImage.fromData(track_metadata.get_image()) if track_metadata.get_image() else QImage(
+                ":/images/cover_art/album-cover.png"),
             duration=track_metadata.duration or 0
         )
         self.tracklist.append(track_info)
         self.addMedia(QMediaContent(QUrl.fromLocalFile(str(filepath))))
+
+        self._total_playlist_duration += track_info.duration
         signal_bus.track_added_to_playlist_signal.emit(track_info)
 
         if len(self.tracklist) == 1:
             self.setCurrentIndex(0)
+
+        self.calculateRemainingTime(self.currentIndex())
 
     def addFolderTracks(self, tracklist: list):
         """Add tracks in directory"""
@@ -59,11 +66,19 @@ class MediaPlaylist(QMediaPlaylist):
         """Track changed"""
         signal_bus.playlist_track_changed_signal.emit(self.tracklist[index])
         signal_bus.playlist_current_track_index_signal.emit(index)
+        signal_bus.media_player_toggle_play_state_signal.emit()
 
     def changeTrack(self, index: int):
         self.setCurrentIndex(index)
+        self.calculateRemainingTime(index)
 
+    def calculateRemainingTime(self, index):
+        elapsed_time = 0.0
+        for i in range(index):
+            elapsed_time += self.tracklist[i].duration
 
+        self._remaining_playlist_time = self._total_playlist_duration - elapsed_time
+        signal_bus.playlist_remaining_time.emit(self._remaining_playlist_time)
 
 
 

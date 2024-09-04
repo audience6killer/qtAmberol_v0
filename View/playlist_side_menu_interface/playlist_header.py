@@ -10,6 +10,8 @@ class PlaylistHeader(QWidget):
     def __init__(self, parent=None):
         super(PlaylistHeader, self).__init__(parent)
 
+        self._time_remaining = 0.0
+
         self.info_layout = QVBoxLayout()
         self.main_layout = QHBoxLayout()
 
@@ -79,3 +81,44 @@ class PlaylistHeader(QWidget):
 
     def __connectSignalsToSlots(self):
         self.hide_sidebar.clicked.connect(signal_bus.hide_playlist_view)
+        signal_bus.playlist_remaining_time.connect(self.setPlaylistRemainingTime)
+        signal_bus.track_position_changed_signal.connect(self.updatePlaylistRemainingTime)
+
+    def updatePlaylistRemainingTime(self, pos):
+        if pos:
+            current_time = pos // 1000
+            t_left = self._time_remaining - current_time
+            self.time_remaining_label.setText(self.getTrackPositionToMinSec(t_left))
+
+
+    def setPlaylistRemainingTime(self, time_rem: float):
+        self._time_remaining = time_rem
+        time = self.getTrackPositionToMinSec(self._time_remaining)
+        self.time_remaining_label.setText(time)
+
+    # TODO: Create a module for this
+    @staticmethod
+    def getTrackPositionToMinSec(pos) -> str:
+        """ Convert from track position in seconds to min:sec"""
+        t_seconds = pos
+        t_minutes = 0
+        t_hours = 0
+        seconds = 0
+        time_str = ""
+        if t_seconds:
+            t_minutes = int(t_seconds // 60)
+            # seconds = int(t_seconds % 60)
+
+        if t_minutes >= 60:
+            t_hours = int(t_minutes // 60)
+            t_minutes = int(t_minutes % 60)
+
+        if t_hours:
+            time_str = f"{t_hours} hours {t_minutes} minutes remaining"
+        else:
+            time_str = f"{t_minutes} minutes remaining"
+
+        if not t_hours and not t_minutes:
+            time_str = "< 1 minute remaining"
+
+        return time_str

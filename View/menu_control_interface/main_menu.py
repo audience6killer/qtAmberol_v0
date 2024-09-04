@@ -114,18 +114,19 @@ class MainMenu(QMenu):
         music_extensions = {'.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a'}
 
         # Get all music file paths of the direct children in the selected directory
-        music_files = [
-            os.path.join(directory, f)
-            for f in os.listdir(directory)
-            if os.path.isfile(os.path.join(directory, f)) and os.path.splitext(f)[1].lower() in music_extensions
-        ]
+        if directory:
+            music_files = [
+                os.path.join(directory, f)
+                for f in os.listdir(directory)
+                if os.path.isfile(os.path.join(directory, f)) and os.path.splitext(f)[1].lower() in music_extensions
+            ]
 
-        if music_files:
-            signal_bus.open_folder_signal.emit(music_files)
+            if music_files:
+                signal_bus.open_folder_signal.emit(music_files)
 
-            # Print the music file paths
-            for file_path in music_files:
-                print(file_path)
+                # Print the music file paths
+                for file_path in music_files:
+                    print(file_path)
 
 
 
