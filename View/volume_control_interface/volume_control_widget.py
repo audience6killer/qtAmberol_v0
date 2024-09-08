@@ -35,6 +35,8 @@ class VolumeControlWidget(QWidget):
         self.volume_mute_button.setObjectName("mute-button")
         self.volume_up_button.setObjectName("volume-up")
 
+        self.volume_mute_button.setCheckable(True)
+
         self.volume_up_button.setIcon(QIcon(":/images/volume_control/volume-up.svg"))
         self.volume_up_button.setFixedSize(QSize(30, 30))
 
@@ -57,7 +59,7 @@ class VolumeControlWidget(QWidget):
 
         self.__connectSignalsToSlots()
 
-    def setSliderColor(self, color: QColor):
+    def setSliderColor(self, color):
         self.volume_widget.setColor(color)
 
     def setWidgetsTooltip(self):

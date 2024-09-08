@@ -1,6 +1,8 @@
 """
 Volume widget interface
 """
+from signal import signal
+from typing import Union
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QVBoxLayout, QWidget
@@ -38,12 +40,12 @@ class VolumeControlInterface(QWidget):
 
         self.setLayout(self.main_layout)
 
-    def updateWidgetColor(self, color: QColor):
-        self.volume_control.setSliderColor(color)
-        setStyleSheet(self, color.getRgb())
+    def updateWidgetColor(self, state_colors):
+        setStyleSheet(self, state_colors)
+        self.volume_control.setSliderColor(state_colors)
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        signal_bus.primary_color_updated_signal.connect(self.updateWidgetColor)
+        signal_bus.state_colors_updated_signal.connect(self.updateWidgetColor)
 
 

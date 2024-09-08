@@ -43,7 +43,7 @@ class TrackListWidget(QListWidget):
         self.itemClicked.connect(self.trackClicked)
         signal_bus.track_added_to_playlist_signal.connect(self.addTrack)
         signal_bus.playlist_current_track_index_signal.connect(self.trackChanged)
-        signal_bus.primary_color_updated_signal.connect(self.setQss)
+        signal_bus.state_colors_updated_signal.connect(self.setQss)
         signal_bus.playlist_view_is_visible.connect(self.isWindowVisible)
 
     def isWindowVisible(self, value):
@@ -103,5 +103,5 @@ class TrackListWidget(QListWidget):
         self.v_scrollbar.hide_timer.start(1000)  # Hide scrollbar after delay when leaving the widget
         super().leaveEvent(event)
 
-    def setQss(self, color: QColor):
-        setStyleSheet(self, color.getRgb())
+    def setQss(self, state_colors):
+        setStyleSheet(self, state_colors)

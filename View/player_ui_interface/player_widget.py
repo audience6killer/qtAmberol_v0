@@ -65,10 +65,9 @@ class PlayerWidget(QWidget):
 
         #self.playerLayout.setContentsMargins(0, 0, 0, 0)
         # Set slider colors
-        color = QColor(125, 125, 125)
-        self.progress_bar.setSliderColor(color)
+        # self.progress_bar.setSliderColor(self)
 
-        self.volume_control.updateWidgetColor(color)
+        # self.volume_control.updateWidgetColor(color)
 
         self.playerLayout.addWidget(self.titlebar, 0, Qt.AlignTop)
 

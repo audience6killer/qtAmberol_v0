@@ -26,10 +26,20 @@ class MediaPlaylist(QMediaPlaylist):
     def __connectSignalsToSlots(self):
         signal_bus.open_file_signal.connect(self.addSong)
         signal_bus.open_folder_signal.connect(self.addFolderTracks)
-        signal_bus.next_song_signal.connect(self.next)
+        signal_bus.next_song_signal.connect(self.nextTrack)
         signal_bus.previous_song_signal.connect(self.previous)
         signal_bus.playlist_track_clicked_index_signal.connect(self.changeTrack)
+        signal_bus.shuffle_playlist_signal.connect(self.handleShuffle)
         self.currentIndexChanged.connect(self.trackChanged)
+
+    def nextTrack(self):
+        self.next()
+
+    def handleShuffle(self, value: bool):
+        if value:
+            self.setPlaybackMode(QMediaPlaylist.Random)
+        else:
+            self.setPlaybackMode(QMediaPlaylist.Sequential)
 
     def addSong(self, filepath: Union[str, Path]):
         """Add song to playlist"""
@@ -67,6 +77,7 @@ class MediaPlaylist(QMediaPlaylist):
         signal_bus.playlist_track_changed_signal.emit(self.tracklist[index])
         signal_bus.playlist_current_track_index_signal.emit(index)
         signal_bus.media_player_toggle_play_state_signal.emit()
+        self.calculateRemainingTime(self.currentIndex())
 
     def changeTrack(self, index: int):
         self.setCurrentIndex(index)

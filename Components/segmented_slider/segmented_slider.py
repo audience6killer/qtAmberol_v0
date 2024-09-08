@@ -2,10 +2,11 @@ import sys
 import math
 
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QEvent, QPoint, QSize, Qt, QPointF, QRectF, QSizeF
+from PyQt5.QtGui import QColor
 
 """
 TODO:   Fix colors saturation   
@@ -295,15 +296,16 @@ class SegmentedSlider(QtWidgets.QWidget):
 
         return super().eventFilter(obj, e)
 
-    def setColor(self, color: QtGui.QColor):
-        """Sets an uniform color for all steps"""
-        #self.steps = [color] * self.n_steps
-        self._step_color = color
-        self._inactive_color = self._step_color.lighter(200)
-        self._hover_color = self._step_color.lighter(180)
-        print(f"Primary color: {self._step_color.getHsv()}")
-        print(f"Inactive color: {self._inactive_color.getHsv()}")
-        print(f"Hover color: {self._hover_color.getHsv()}")
+    def setColor(self, color: Union[QtGui.QColor, list]):
+        """Sets a uniform color for all steps"""
+        if type(color) is QtGui.QColor:
+            self._step_color = color
+            self._inactive_color = self._step_color.lighter(200)
+            self._hover_color = self._step_color.lighter(180)
+        else:
+            self._step_color = color[2]
+            self._hover_color = color[1]
+            self._inactive_color = color[0]
         self.triggerRefresh(update_steps=False)
 
     def setPadding(self, padding):

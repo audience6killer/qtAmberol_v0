@@ -32,9 +32,9 @@ class MenuControlInterface(QWidget):
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        signal_bus.primary_color_updated_signal.connect(self.updateWidgetColors)
+        signal_bus.state_colors_updated_signal.connect(self.updateWidgetColors)
 
-    def updateWidgetColors(self, primary_color: QColor):
+    def updateWidgetColors(self, state_colors):
         """Update widget colors"""
-        setStyleSheet(self, primary_color.getRgb())
+        setStyleSheet(self, state_colors)
 

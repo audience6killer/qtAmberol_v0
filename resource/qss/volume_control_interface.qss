@@ -8,8 +8,8 @@ QPushButton:hover {
   background-color: rgba($red_hover, $green_hover, $blue_hover, $alpha_bg_hover);
 }
 
-QPushButton:focus {
- border: 1px solid rgb($red_border, $green_border, $blue_border);
+QPushButton:pressed, QPushButton:checked {
+    background-color: rgba($red_border, $green_border, $blue_border, $alpha_border);
 }
 
 QToolTip {

@@ -1,6 +1,7 @@
 """
 Main window layout
 """
+from dataclasses import dataclass
 
 from PyQt5.QtWidgets import QMdiArea
 from PyQt5.QtGui import QPainter, QLinearGradient, QColor, QImage, QBrush
@@ -15,7 +16,7 @@ from Components.media_player.song_info import SongInfo
 from .ui_widget_handler import UIWidgetHandler
 
 from Common.image_utils import ColorPalette
-from Common.style_sheet import setStyleSheet
+from Common.style_sheet import setStyleSheet, determine_color_degradation
 from Common.signal_bus import signal_bus
 
 from Common import resources
@@ -35,7 +36,7 @@ class MainWindowUI(FramelessMainWindow):
 
         self.__last_volume = 100
         self.colors = None
-        self.primary_color = [125, 125, 125]
+        self._state_colors = None  # list[QColor]
 
         self.initWindow()
 
@@ -61,16 +62,17 @@ class MainWindowUI(FramelessMainWindow):
 
     def setQss(self):
         """ Generate qss and apply """
-        setStyleSheet(self, tuple(self.primary_color))
+        setStyleSheet(self, self._state_colors)
 
     def updateUIColors(self, cover: QImage):
         colors = ColorPalette(cover)
-        self.colors = colors.get_min_contrast_palette()
-        #self.colors = colors.get_primary_min_contrast_palette()
-        self.primary_color = colors.get_dominant_color()
+        # self.colors = colors.get_min_contrast_palette()
+        self.colors = colors.get_primary_min_contrast_palette()
+        dominant_color = colors.get_dominant_color()
+        self._state_colors = determine_color_degradation(dominant_color)
 
         signal_bus.gradient_colors_updated_signal.emit(self.colors)
-        signal_bus.primary_color_updated_signal.emit(QColor(*self.primary_color))
+        signal_bus.state_colors_updated_signal.emit(self._state_colors)
 
     def paintEvent(self, event):
         """ Paint widget event """
@@ -177,5 +179,3 @@ class MainWindowUI(FramelessMainWindow):
         self.setQss()
         self.repaint_flag = True
         self.update()
-
-

@@ -127,7 +127,7 @@ class ColorPalette:
 
         self.primary_color = [int(channel) for channel in palette[0]]
 
-        print(f"Primary color: {self.primary_color}")
+        #print(f"Primary color: {self.primary_color}")
         return self.primary_color
 
     @staticmethod

@@ -11,6 +11,8 @@ class SignalBus(QObject, Singleton):
     open_file_signal = pyqtSignal(str)
     open_folder_signal = pyqtSignal(list)
 
+    shuffle_playlist_signal = pyqtSignal(bool)
+
     # Playback options
     toggle_play_state_signal = pyqtSignal()
     next_song_signal = pyqtSignal()
@@ -46,6 +48,7 @@ class SignalBus(QObject, Singleton):
     # Colors signals
     primary_color_updated_signal = pyqtSignal(QColor)
     gradient_colors_updated_signal = pyqtSignal(list)
+    state_colors_updated_signal = pyqtSignal(list)
 
     # QMdi signals
     hide_playlist_view = pyqtSignal()

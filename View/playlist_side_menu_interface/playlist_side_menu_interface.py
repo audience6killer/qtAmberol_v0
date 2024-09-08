@@ -53,7 +53,7 @@ class PlaylistSideMenuInterface(QWidget):
         self.setLayout(self.main_layout)
 
     def __connectSignalsToSlots(self):
-        signal_bus.primary_color_updated_signal.connect(self.setQss)
+        signal_bus.state_colors_updated_signal.connect(self.setQss)
 
-    def setQss(self, primary_color: QColor):
-        setStyleSheet(self, primary_color.getRgb())
+    def setQss(self, state_colors):
+        setStyleSheet(self, state_colors)

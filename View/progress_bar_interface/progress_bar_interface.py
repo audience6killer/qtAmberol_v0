@@ -50,8 +50,8 @@ class ProgressBarInterface(QWidget):
 
         self.setLayout(self.progress_layout)
 
-    def setSliderColor(self, color: QColor):
-        self.progress_widget.setSliderColor(color)
+    def setSliderColor(self, state_colors: list):
+        self.progress_widget.setSliderColor(state_colors)
 
     def setTrackDuration(self, metadata: SongInfo):
         """Update timestamps"""
@@ -64,7 +64,7 @@ class ProgressBarInterface(QWidget):
         """Connect signals to slots"""
         self.waveform_thread.waveform_finished.connect(self.__onWaveformFinished)
         signal_bus.playlist_track_changed_signal.connect(self.setWaveformValues)
-        signal_bus.primary_color_updated_signal.connect(self.setSliderColor)
+        signal_bus.state_colors_updated_signal.connect(self.setSliderColor)
         signal_bus.track_position_changed_signal.connect(self.updatePlaybackTrackPosition)
         signal_bus.playlist_track_changed_signal.connect(self.setTrackDuration)
 

@@ -33,10 +33,10 @@ class PlaybackControlInterface(QWidget):
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        signal_bus.primary_color_updated_signal.connect(self.setQss)
+        signal_bus.state_colors_updated_signal.connect(self.setQss)
 
-    def setQss(self, primary_color: QColor):
+    def setQss(self, state_colors):
         """Update QSS values"""
-        setStyleSheet(self, primary_color.getRgb())
+        setStyleSheet(self, state_colors)
 
 

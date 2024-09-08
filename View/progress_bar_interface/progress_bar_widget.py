@@ -61,7 +61,7 @@ class ProgressBarWidget(QWidget):
         self._track_duration = duration * 1000
         self._duration_to_step_ratio = self.steps / self._track_duration
 
-    def setSliderColor(self, color: QColor):
+    def setSliderColor(self, color):
         self.progress_bar.setColor(color)
 
     def setWaveformValues(self, values: list):

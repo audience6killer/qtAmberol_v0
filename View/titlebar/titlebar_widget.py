@@ -45,13 +45,13 @@ class TitleBar(QWidget):
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        signal_bus.primary_color_updated_signal.connect(self.updateWidgetColor)
+        signal_bus.state_colors_updated_signal.connect(self.updateWidgetColor)
         self.close_button.clicked.connect(signal_bus.close_window_signal)
         self.minimize_button.clicked.connect(signal_bus.minimize_window_signal)
 
-    def updateWidgetColor(self, color: QColor) -> None:
+    def updateWidgetColor(self, state_colors) -> None:
         """Update widget color"""
-        setStyleSheet(self, color.getRgb())
+        setStyleSheet(self, state_colors)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MouseButton.LeftButton:

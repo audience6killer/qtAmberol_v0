@@ -38,9 +38,7 @@ class MenuControlWidget(QWidget):
 
         self.main_layout.setContentsMargins(100, 0, 100, 0)
 
-        self.menu_button.setCheckable(True)
         self.shuffle_playlist.setCheckable(True)
-        self.playlist_button.setCheckable(True)
         self.enable_repeat.setCheckable(True)
 
         self.menu_button.setObjectName("menu-button")
@@ -82,6 +80,13 @@ class MenuControlWidget(QWidget):
         """Connect signals to slots"""
         self.menu_button.clicked.connect(self.openMenuPopup)
         self.playlist_button.clicked.connect(signal_bus.playlist_view_open_signal)
+        self.shuffle_playlist.clicked.connect(self.shufflePlaylistClicked)
+
+    def shufflePlaylistClicked(self):
+        if self.shuffle_playlist.isChecked():
+            signal_bus.shuffle_playlist_signal.emit(True)
+        else:
+            signal_bus.shuffle_playlist_signal.emit(False)
 
     def openMenuPopup(self):
         """Menu popup"""
