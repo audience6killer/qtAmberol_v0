@@ -2,6 +2,7 @@
 Main window layout
 """
 from dataclasses import dataclass
+from enum import Enum
 
 from PyQt5.QtWidgets import QMdiArea
 from PyQt5.QtGui import QPainter, QLinearGradient, QColor, QImage, QBrush
@@ -24,6 +25,7 @@ from Common import resources
 
 class MainWindowUI(FramelessMainWindow):
     repaint_flag = False
+    BG_STYLES = Enum("BG_Styles", ['PRIMARY', 'LESS_CONTRAST'])
 
     def __init__(self, parent=None):
         # Window configuration
@@ -37,6 +39,10 @@ class MainWindowUI(FramelessMainWindow):
         self.__last_volume = 100
         self.colors = None
         self._state_colors = None  # list[QColor]
+
+        self._current_bg_style = self.BG_STYLES.PRIMARY
+        self._min_contrast_palette: list = []
+        self._primary_color_palette: list = []
 
         self.initWindow()
 
@@ -66,8 +72,14 @@ class MainWindowUI(FramelessMainWindow):
 
     def updateUIColors(self, cover: QImage):
         colors = ColorPalette(cover)
-        # self.colors = colors.get_min_contrast_palette()
-        self.colors = colors.get_primary_min_contrast_palette()
+        self._min_contrast_palette = colors.get_min_contrast_palette()
+        self._primary_color_palette = colors.get_primary_min_contrast_palette()
+
+        if self._current_bg_style == self.BG_STYLES.LESS_CONTRAST:
+            self.colors = self._min_contrast_palette
+        else:
+            self.colors = self._primary_color_palette
+
         dominant_color = colors.get_dominant_color()
         self._state_colors = determine_color_degradation(dominant_color)
 
@@ -131,6 +143,7 @@ class MainWindowUI(FramelessMainWindow):
         signal_bus.increase_volume_signal.connect(self.increaseVolumeEvent)
         signal_bus.volume_scroll_changed_signal.connect(self.volumeScrollEvent)
         signal_bus.progress_bar_clicked_value_signal.connect(self.setTrackPosition)
+        signal_bus.alternate_background_style.connect(self.alternateBackgroundStyle)
 
         signal_bus.close_window_signal.connect(self.close)
 
@@ -179,3 +192,14 @@ class MainWindowUI(FramelessMainWindow):
         self.setQss()
         self.repaint_flag = True
         self.update()
+
+    def alternateBackgroundStyle(self):
+        if self._current_bg_style == self.BG_STYLES.LESS_CONTRAST:
+            self.colors = self._primary_color_palette
+            self._current_bg_style = self.BG_STYLES.PRIMARY
+        else:
+            self.colors = self._min_contrast_palette
+            self._current_bg_style = self.BG_STYLES.LESS_CONTRAST
+
+        signal_bus.gradient_colors_updated_signal.emit(self.colors)
+        self.repaintWidget()

@@ -10,6 +10,7 @@ class SignalBus(QObject, Singleton):
     # Menu Options
     open_file_signal = pyqtSignal(str)
     open_folder_signal = pyqtSignal(list)
+    alternate_background_style = pyqtSignal()
 
     shuffle_playlist_signal = pyqtSignal(bool)
 

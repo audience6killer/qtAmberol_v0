@@ -11,35 +11,17 @@ class MainMenu(QMenu):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
-
+        self.add_song_option = None
+        self.add_folder_option = None
+        self.clear_playlist_option = None
+        self.match_cover_art_option = None
+        self.alternate_background_style = None
+        self.about_option = None
         self.setupUI()
 
 
     def setupUI(self):
         """Setup UI"""
-        #self.setStyleSheet("""
-        #    QMenu {
-        #        background-color: white;
-        #        border: 1px solid black;
-        #        border-radius: 10px;  /* Rounded corners */
-        #        padding: 2px;  /* Add padding for better fit */
-        #    }
-        #    QMenu::item {
-        #        background-color: transparent;
-        #        border-radius: 8px; /* Ensure items have rounded corners too */
-        #        margin: 1px 2px;  /* Adjust margin for better fit */
-        #        padding: 4px 8px;  /* Adjust padding for better fit */
-        #    }
-        #    QMenu::item:selected {
-        #        background-color: lightblue;
-        #    }
-        #    QMenu::separator {
-        #        height: 1px;
-        #        background: black;
-        #        margin-left: 10px;
-        #        margin-right: 10px;
-        #    }
-        #""")
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         self.setObjectName('main-menu')
@@ -52,6 +34,7 @@ class MainMenu(QMenu):
         self.clear_playlist_option.setShortcut(QKeySequence("Ctrl+L"))
 
         self.match_cover_art_option = QAction("Match Cover Art", self)
+        self.alternate_background_style = QAction("Alternate Background", self)
         self.about_option = QAction("About", self)
 
         self.addAction(self.add_song_option)
@@ -60,6 +43,7 @@ class MainMenu(QMenu):
         self.addSeparator()
 
         self.addAction(self.match_cover_art_option)
+        self.addAction(self.alternate_background_style)
         self.addSeparator()
 
         self.addAction(self.about_option)
@@ -92,9 +76,9 @@ class MainMenu(QMenu):
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
-        #self.add_folder_option.triggered.connect()
         self.add_song_option.triggered.connect(self.handleOpenFile)
         self.add_folder_option.triggered.connect(self.handleOpenFolder)
+        self.alternate_background_style.triggered.connect(signal_bus.alternate_background_style)
 
     def handleOpenFile(self):
         options = QFileDialog.Options()
@@ -128,14 +112,9 @@ class MainMenu(QMenu):
                 for file_path in music_files:
                     print(file_path)
 
-
-
-
-
     def openMenu(self, pos):
         """Open main menu popup"""
         self.exec_(pos)
-        #signal_bus.repaint_main_window_signal.emit()
 
 
 
