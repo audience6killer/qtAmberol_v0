@@ -40,7 +40,7 @@ class MainWindowUI(FramelessMainWindow):
         self.colors = None
         self._state_colors = None  # list[QColor]
 
-        self._current_bg_style = self.BG_STYLES.PRIMARY
+        self._current_bg_style = self.BG_STYLES.LESS_CONTRAST
         self._min_contrast_palette: list = []
         self._primary_color_palette: list = []
 
@@ -139,7 +139,7 @@ class MainWindowUI(FramelessMainWindow):
         """Connect signals to slots"""
         signal_bus.toggle_play_state_signal.connect(self.togglePlayState)
         signal_bus.playlist_track_changed_signal.connect(self.currentTrackChanged)
-        signal_bus.mute_volume_signal.connect(self.muteVolumeEvent)
+        signal_bus.toggle_mute_volume_signal.connect(self.player.setMuteState)
         signal_bus.increase_volume_signal.connect(self.increaseVolumeEvent)
         signal_bus.volume_scroll_changed_signal.connect(self.volumeScrollEvent)
         signal_bus.progress_bar_clicked_value_signal.connect(self.setTrackPosition)
@@ -158,19 +158,7 @@ class MainWindowUI(FramelessMainWindow):
 
     def increaseVolumeEvent(self):
         """Increases the volume by 10%"""
-        current_volume = self.player.volume()
-        print(f"Volume: {current_volume}")
-        if current_volume < 100:
-            self.player.setVolume(current_volume + 5)
-
-    def muteVolumeEvent(self):
-        """Mute volume"""
-        current_volume = self.player.volume()
-        if current_volume == 0:
-            self.player.setVolume(self.__last_volume)
-        else:
-            self.__last_volume = current_volume
-            self.player.setVolume(0)
+        self.player.increaseVolume(5)
 
     def togglePlayState(self):
         """Toggle play state"""
@@ -203,3 +191,4 @@ class MainWindowUI(FramelessMainWindow):
 
         signal_bus.gradient_colors_updated_signal.emit(self.colors)
         self.repaintWidget()
+

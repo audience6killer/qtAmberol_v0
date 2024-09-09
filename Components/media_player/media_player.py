@@ -13,6 +13,8 @@ class MediaPlayer(QMediaPlayer):
         super().__init__(parent=parent)
         self.setNotifyInterval(500)
         self._current_playlist_track = 0
+        self._last_volume = self.volume()
+
         self.__connectSignalsToSlots()
 
     def togglePlayState(self):
@@ -33,6 +35,7 @@ class MediaPlayer(QMediaPlayer):
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         signal_bus.media_player_toggle_play_state_signal.connect(self.trackSelected)
+        self.volumeChanged.connect(signal_bus.volume_changed_event)
         self.positionChanged.connect(self.trackPositionChangedEvent)
         self.error.connect(self.handleErrorSlot)
 
@@ -48,3 +51,27 @@ class MediaPlayer(QMediaPlayer):
         """Set new track position"""
         new_pos = (pos / 100) * self.duration()
         self.setPosition(int(new_pos))
+
+    def setMuteState(self, is_muted: bool):
+        if is_muted:
+            self._last_volume = self.volume()
+            self.setMuted(True)
+        else:
+            self.setVolume(self._last_volume)
+
+    def increaseVolume(self, increment: int):
+        new_value = increment + self.volume()
+        if self.isMuted():
+            new_value = increment
+
+        if new_value <= 100:
+            print(f"Current volume {new_value}")
+            self.setVolume(new_value)
+
+    def setVolume(self, volume):
+        if self.isMuted():
+            self.setMuted(False)
+        signal_bus.volume_changed_event.emit(volume)
+        super(MediaPlayer, self).setVolume(volume)
+
+

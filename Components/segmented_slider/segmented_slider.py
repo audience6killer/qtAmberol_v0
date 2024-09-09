@@ -366,6 +366,12 @@ class SegmentedSlider(QtWidgets.QWidget):
             self._is_manually_modified = True
             self.triggerRefresh(update_steps=False)
 
+    def setValue(self, value: int):
+        if value in range(self._vmin, self._vmax + 1):
+            self._value = value
+            self._is_manually_modified = False
+            self.triggerRefresh(update_steps=False)
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

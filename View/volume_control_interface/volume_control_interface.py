@@ -44,8 +44,15 @@ class VolumeControlInterface(QWidget):
         setStyleSheet(self, state_colors)
         self.volume_control.setSliderColor(state_colors)
 
+    def playerVolumeChanged(self, volume: int):
+        if volume:
+            self.volume_control.volume_mute_button.setChecked(False)
+
+        self.volume_control.volume_widget.setValue(volume)
+
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
         signal_bus.state_colors_updated_signal.connect(self.updateWidgetColor)
+        signal_bus.volume_changed_event.connect(self.playerVolumeChanged)
 
 

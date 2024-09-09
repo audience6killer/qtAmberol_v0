@@ -32,7 +32,7 @@ class SignalBus(QObject, Singleton):
     update_timestamp_signal = pyqtSignal(int)
 
     # Volume options
-    mute_volume_signal = pyqtSignal()
+    toggle_mute_volume_signal = pyqtSignal(bool)
     increase_volume_signal = pyqtSignal()
     volume_scroll_changed_signal = pyqtSignal(int)
 
@@ -45,6 +45,7 @@ class SignalBus(QObject, Singleton):
     # Media player signals
     track_position_changed_signal = pyqtSignal(int)
     media_player_toggle_play_state_signal = pyqtSignal()
+    volume_changed_event = pyqtSignal(int)
 
     # Colors signals
     primary_color_updated_signal = pyqtSignal(QColor)
