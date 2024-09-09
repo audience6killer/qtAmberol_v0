@@ -45,6 +45,7 @@ class VolumeControlInterface(QWidget):
         self.volume_control.setSliderColor(state_colors)
 
     def playerVolumeChanged(self, volume: int):
+        """Update UI"""
         if volume:
             self.volume_control.volume_mute_button.setChecked(False)
 
