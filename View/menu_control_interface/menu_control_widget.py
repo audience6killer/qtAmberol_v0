@@ -85,10 +85,10 @@ class MenuControlWidget(QWidget):
     def shufflePlaylistClicked(self):
         if self.shuffle_playlist.isChecked():
             signal_bus.shuffle_playlist_signal.emit(True)
-            self.shuffle_playlist.setToolTip("Enable shuffle")
+            self.shuffle_playlist.setToolTip("Disable shuffle")
         else:
             signal_bus.shuffle_playlist_signal.emit(False)
-            self.shuffle_playlist.setToolTip("Disable shuffle")
+            self.shuffle_playlist.setToolTip("Shuffle playlist")
 
     def openMenuPopup(self):
         """Menu popup"""

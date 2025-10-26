@@ -81,8 +81,10 @@ class PlaybackControlWidget(QWidget):
         self.__is_playing = not self.__is_playing
         if self.__is_playing:
             self.play_button.setIcon(QIcon(self.play_pause_icons[1]))
+            self.play_button.setToolTip("Pause")
         else:
             self.play_button.setIcon(QIcon(self.play_pause_icons[0]))
+            self.play_button.setToolTip("Play")
 
         self.play_button.update()
 

@@ -70,9 +70,11 @@ class VolumeControlWidget(QWidget):
     def toggleMuteVolumeEvent(self):
         if self.volume_mute_button.isChecked():
             signal_bus.toggle_mute_volume_signal.emit(True)
+            self.volume_mute_button.setToolTip("Unmute")
             self.volume_widget.setValue(0)
         else:
             signal_bus.toggle_mute_volume_signal.emit(False)
+            self.volume_mute_button.setToolTip("Mute")
 
     def __connectSignalsToSlots(self):
         """Connect signals to slots"""
